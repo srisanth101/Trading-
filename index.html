@@ -26,7 +26,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background: url('https://blogger.googleusercontent.com/img/a/AVvXsEjXyHid96A_suWGrMztC2OqSZLnS4U7rUDvjwHYXbTrjdAdhYs8q7fCIu33rsu4oTNUKiUwrrzs_F4t9SmiInPKxOaPMNQjdxIr-vzmUrHydvivUmicUK-dpYynziKJzcuQ0wusixp3tRvpoidn-gHWR3dCH5B7tRTFGxrUjz5R1N-UHlmpaZ-L2nrQnkc') no-repeat center center fixed;
             background-size: cover;
             position: relative;
             color: white;
@@ -461,7 +461,7 @@
             <div class="logo">AI</div>
             <h1>AI Predict Trading</h1>
             <div class="subtitle">Advanced trading prediction system</div>
-            <div class="designer-credit">Designed By: K.G.Srisanth</div>
+            <div class="designer-credit">Designed By: <a href="https://www.instagram.com/here.srisanth" target="_blank" class="designer-link">K.G.Srisanth</a></div>
         </header>
         
         <div class="section">
@@ -662,11 +662,12 @@
             const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
             
             if (isWin) {
-                predictionResult.textContent = "BUY SIGNAL (WIN)";
+                // Replace the text with an image for BUY signal
+                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgaJkbfaPlBjyMDqVoj5JvrluOJDDnJ67So2CFn-E-ZkA-9KJd9xY1G78S-Lx3NVc-bwXuT3hlPcs6KInDyrjUNbm1DPhpgnrIHmxsHz8KGgL3xxv7eRI2R3hiCfkzbAlGXF4pRc3CzyJ0HaQsu8UIVNERGd5KlcHvJEyzn1nEfG20zyufYU0udJsrjAbY/s1080/Picsart_25-07-30_20-24-11-827.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text win";
             } else {
                 // Replace the text with an image for SELL signal
-                predictionResult.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/2740/2740655.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
+                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjFLllSpdZAm22hThc-34KazmFT8QgykmYFYkM_EaIJz4C0Mh6Jzbe92dUVvsZoIzeIEz4tezr_Zakh78oghCiP2phrB_8DWOAc8bM4OoxmowJ4Zk1p8LU8ReXYBFhrE4LkZn31AuMmd4KZy6MJhe-4pG_OP2nqEcQOvMHijOHxb6ohrTBip_Vsbupr33s/s1080/Picsart_25-07-30_20-23-54-958.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text loss";
             }
             
