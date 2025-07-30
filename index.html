@@ -618,4 +618,74 @@
             mainPreview.src = imageData;
             mainPreview.style.display = 'block';
             
-       
+            stopCamera();
+            startAnalysis(imageData);
+        }
+        
+        function startAnalysis(imageSrc) {
+            analysisSection.style.display = 'block';
+            
+            // Simulate AI analysis progress
+            let progress = 0;
+            let seconds = 5;
+            countdown.textContent = seconds;
+            
+            const progressInterval = setInterval(() => {
+                progress += 20;
+                progressBar.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    showResult(imageSrc);
+                }
+            }, 1000);
+            
+            const countdownInterval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        }
+        
+        function showResult(imageSrc) {
+            analysisSection.style.display = 'none';
+            resultSection.style.display = 'block';
+            
+            analyzedImage.src = imageSrc;
+            analyzedImage.style.display = 'block';
+            
+            // Simulate AI prediction (55% chance of win)
+            const isWin = Math.random() > 0.45;
+            const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
+            
+            if (isWin) {
+                predictionResult.textContent = "BUY SIGNAL (WIN)";
+                predictionResult.className = "prediction-text win";
+            } else {
+                predictionResult.textContent = "SELL SIGNAL (LOSS)";
+                predictionResult.className = "prediction-text loss";
+            }
+            
+            confidenceLevel.textContent = confidence + "%";
+        }
+        
+        function resetAnalysis() {
+            resultSection.style.display = 'none';
+            analysisSection.style.display = 'none';
+            progressBar.style.width = '0%';
+            mainPreview.style.display = 'none';
+            mainPreview.src = '';
+            analyzedImage.style.display = 'none';
+            fileInput.value = '';
+        }
+        
+        function executeTrade(action) {
+            alert(`Trade executed: ${action.toUpperCase()} signal`);
+            // In a real app, you would connect to trading API here
+        }
+    </script>
+</body>
+</html>
