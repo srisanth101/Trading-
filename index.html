@@ -665,7 +665,8 @@
                 predictionResult.textContent = "BUY SIGNAL (WIN)";
                 predictionResult.className = "prediction-text win";
             } else {
-                predictionResult.textContent = "SELL SIGNAL (LOSS)";
+                // Replace the text with an image for SELL signal
+                predictionResult.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/2740/2740655.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text loss";
             }
             
