@@ -14,6 +14,7 @@
             --warning-color: #f39c12;
             --dark-color: #2c3e50;
             --light-color: #ecf0f1;
+            --premium-color: #f1c40f;
             --background-blur: 5px;
         }
         
@@ -61,36 +62,33 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        header {
+        /* Login Section */
+        .login-section {
             text-align: center;
-            margin-bottom: 30px;
-            animation: slideDown 0.8s ease-out;
-        }
-        
-        @keyframes slideDown {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            padding: 30px;
         }
         
         .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            font-weight: bold;
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            overflow: hidden;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         h1 {
             font-size: 2.5rem;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             background: linear-gradient(to right, #3498db, #2ecc71);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -100,54 +98,38 @@
         .subtitle {
             font-size: 1rem;
             color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
             margin-bottom: 20px;
+            text-align: left;
         }
         
-        .designer-credit {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.5);
-            margin-top: 5px;
-        }
-        
-        .section {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            animation: fadeInUp 1s ease-out;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
             color: var(--light-color);
-            position: relative;
-            padding-bottom: 10px;
         }
         
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary-color), var(--success-color));
-            border-radius: 3px;
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
         
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+            background-color: rgba(255, 255, 255, 0.2);
         }
         
         .btn {
@@ -165,6 +147,8 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
+            margin: 10px auto;
+            width: 100%;
         }
         
         .btn::before {
@@ -202,16 +186,6 @@
             box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
         }
         
-        .btn-danger {
-            background-color: var(--danger-color);
-            color: white;
-        }
-        
-        .btn-danger:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
-        }
-        
         .btn-warning {
             background-color: var(--warning-color);
             color: white;
@@ -220,6 +194,121 @@
         .btn-warning:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+        }
+        
+        .btn-premium {
+            background-color: var(--premium-color);
+            color: var(--dark-color);
+            font-weight: bold;
+        }
+        
+        .btn-premium:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+        }
+        
+        /* Trial Section */
+        .trial-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border: 1px solid var(--premium-color);
+        }
+        
+        .trial-section h3 {
+            color: var(--premium-color);
+            margin-bottom: 10px;
+        }
+        
+        .trial-section p {
+            margin-bottom: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        /* Main App Section */
+        .main-app {
+            display: none;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+        
+        .user-id {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .subscription-info {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .subscription-info.premium {
+            color: var(--premium-color);
+            font-weight: bold;
+        }
+        
+        .logout-btn {
+            background-color: transparent;
+            border: 1px solid var(--danger-color);
+            color: var(--danger-color);
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .section {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--light-color);
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary-color), var(--success-color));
+            border-radius: 3px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
         
         .preview-container {
@@ -233,18 +322,11 @@
             border-radius: 10px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
             display: none;
-            animation: zoomIn 0.5s ease-out;
-        }
-        
-        @keyframes zoomIn {
-            from { transform: scale(0.9); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
         }
         
         .camera-section {
             display: none;
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
         }
         
         #cameraView {
@@ -270,7 +352,6 @@
         .analysis-section {
             display: none;
             text-align: center;
-            animation: fadeIn 0.8s ease-out;
         }
         
         .progress-container {
@@ -323,7 +404,6 @@
         .result-section {
             display: none;
             text-align: center;
-            animation: fadeInUp 0.8s ease-out;
         }
         
         .result-display {
@@ -457,68 +537,108 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
             <div class="logo">
-  <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
-</div>
-           <h1>AI Predict Trading</h1>
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
+            </div>
+            <h1>AI Predict Trading</h1>
             <div class="subtitle">Advanced trading prediction system</div>
+            
+            <div class="form-group">
+                <label for="loginId">Login ID</label>
+                <input type="text" id="loginId" placeholder="Enter SPIDEY1221">
+            </div>
+            
+            <button class="btn btn-primary" id="loginBtn">Login</button>
+            
+            <div class="trial-section">
+                <h3>Free Trial Available</h3>
+                <p>Get full access to test our premium trading predictions!</p>
+                <button class="btn btn-premium" id="startTrialBtn">Start Free Trial</button>
+            </div>
+            
             <div class="designer-credit">Designed 🔮 By: <a href="https://www.instagram.com/here.srisanth?igsh=MXU4OG11YWt4bDdnbA==" target="_blank" style="color: rgba(255, 255, 255, 0.5); text-decoration: none;">K.G.Srisanth</a></div>
-        </header>
-        
-        <div class="section">
-            <h2>Select Trading Chart</h2>
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="uploadBtn">Upload Image</button>
-                <button class="btn btn-primary" id="cameraBtn">Use Camera</button>
-            </div>
-            <input type="file" id="fileInput" accept="image/*" class="hidden">
-            
-            <div class="preview-container">
-                <img id="mainPreview" alt="Selected chart preview">
-            </div>
         </div>
         
-        <div class="section camera-section" id="cameraSection">
-            <h2>Camera Capture</h2>
-            <video id="cameraView" autoplay playsinline></video>
-            <div class="camera-controls">
-                <button class="btn btn-warning" id="switchCameraBtn">Switch Camera</button>
-                <button class="btn btn-success" id="captureBtn">Capture</button>
-                <button class="btn btn-danger" id="cancelCameraBtn">Cancel</button>
-            </div>
-            <canvas id="canvas" class="hidden"></canvas>
-        </div>
-        
-        <div class="section analysis-section" id="analysisSection">
-            <h2>AI Analysis in Progress</h2>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress" id="progressBar"></div>
+        <!-- Main App Section -->
+        <div class="main-app" id="mainApp">
+            <header>
+                <div class="user-info">
+                    <div>
+                        <div class="user-id">ID: <span id="displayUserId">SPIDEY1221</span></div>
+                        <div class="subscription-info">Free Trial Active</div>
+                    </div>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
-                <div class="countdown-text">Analyzing trading patterns... <span id="countdown">5</span> seconds remaining</div>
-            </div>
-        </div>
-        
-        <div class="section result-section" id="resultSection">
-            <h2>Prediction Result</h2>
-            <div class="result-display">
-                <img id="analyzedImage" src="" alt="Analyzed chart">
-                <div class="prediction-text" id="predictionResult"></div>
-                <div class="confidence-text">AI Confidence: <span id="confidenceLevel">85%</span></div>
                 
-                <div class="trade-buttons">
-                    <button class="trade-btn buy-btn" id="buyBtn">BUY</button>
-                    <button class="trade-btn sell-btn" id="sellBtn">SELL</button>
+                <h1>AI Predict Trading</h1>
+                <div class="subtitle">Advanced trading prediction system</div>
+            </header>
+            
+            <div class="section" id="tradingSection">
+                <h2>Select Trading Chart</h2>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="uploadBtn">Upload Image</button>
+                    <button class="btn btn-primary" id="cameraBtn">Use Camera</button>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" class="hidden">
+                
+                <div class="preview-container">
+                    <img id="mainPreview" alt="Selected chart preview">
                 </div>
             </div>
             
-            <button class="btn btn-primary" id="newPredictionBtn">New Prediction</button>
+            <div class="section camera-section" id="cameraSection">
+                <h2>Camera Capture</h2>
+                <video id="cameraView" autoplay playsinline></video>
+                <div class="camera-controls">
+                    <button class="btn btn-warning" id="switchCameraBtn">Switch Camera</button>
+                    <button class="btn btn-success" id="captureBtn">Capture</button>
+                    <button class="btn btn-danger" id="cancelCameraBtn">Cancel</button>
+                </div>
+                <canvas id="canvas" class="hidden"></canvas>
+            </div>
+            
+            <div class="section analysis-section" id="analysisSection">
+                <h2>AI Analysis in Progress</h2>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress" id="progressBar"></div>
+                    </div>
+                    <div class="countdown-text">Analyzing trading patterns... <span id="countdown">5</span> seconds remaining</div>
+                </div>
+            </div>
+            
+            <div class="section result-section" id="resultSection">
+                <h2>Prediction Result</h2>
+                <div class="result-display">
+                    <img id="analyzedImage" src="" alt="Analyzed chart">
+                    <div class="prediction-text" id="predictionResult"></div>
+                    <div class="confidence-text">AI Confidence: <span id="confidenceLevel">85%</span></div>
+                    
+                    <div class="trade-buttons">
+                        <button class="trade-btn buy-btn" id="buyBtn">BUY</button>
+                        <button class="trade-btn sell-btn" id="sellBtn">SELL</button>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="newPredictionBtn">New Prediction</button>
+            </div>
         </div>
     </div>
 
     <script>
         // DOM elements
+        const loginSection = document.getElementById('loginSection');
+        const mainApp = document.getElementById('mainApp');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginIdInput = document.getElementById('loginId');
+        const startTrialBtn = document.getElementById('startTrialBtn');
+        const displayUserId = document.getElementById('displayUserId');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        // Trading elements
         const uploadBtn = document.getElementById('uploadBtn');
         const cameraBtn = document.getElementById('cameraBtn');
         const fileInput = document.getElementById('fileInput');
@@ -545,6 +665,11 @@
         let facingMode = "environment"; // Start with back camera
         
         // Event listeners
+        loginBtn.addEventListener('click', handleLogin);
+        startTrialBtn.addEventListener('click', startFreeTrial);
+        logoutBtn.addEventListener('click', logoutUser);
+        
+        // Trading event listeners
         uploadBtn.addEventListener('click', () => fileInput.click());
         cameraBtn.addEventListener('click', startCamera);
         fileInput.addEventListener('change', handleFileUpload);
@@ -556,6 +681,48 @@
         sellBtn.addEventListener('click', () => executeTrade('sell'));
         
         // Functions
+        function handleLogin() {
+            const loginId = loginIdInput.value.trim();
+            
+            if (!loginId) {
+                alert('Please enter your login ID');
+                return;
+            }
+            
+            // Check if login ID is correct
+            if (loginId === 'SPIDEY1221') {
+                loginUser(loginId);
+            } else {
+                alert('Invalid login ID. Please try again or use the free trial.');
+            }
+        }
+        
+        function loginUser(userId) {
+            displayUserId.textContent = userId;
+            
+            // Show main app
+            loginSection.style.display = 'none';
+            mainApp.style.display = 'block';
+        }
+        
+        function startFreeTrial() {
+            // Automatically login with trial account
+            loginUser('TRIAL_USER');
+        }
+        
+        function logoutUser() {
+            // Show login section
+            mainApp.style.display = 'none';
+            loginSection.style.display = 'block';
+            
+            // Reset inputs
+            loginIdInput.value = '';
+            
+            // Reset any active analysis
+            resetAnalysis();
+        }
+        
+        // Trading functions
         function handleFileUpload(event) {
             const file = event.target.files[0];
             if (file && file.type.match('image.*')) {
@@ -664,11 +831,9 @@
             const confidence = Math.floor(Math.random() * 30) + 70; // 70-99%
             
             if (isWin) {
-                // Replace the text with an image for BUY signal
-                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgaJkbfaPlBjyMDqVoj5JvrluOJDDnJ67So2CFn-E-ZkA-9KJd9xY1G78S-Lx3NVc-bwXuT3hlPcs6KInDyrjUNbm1DPhpgnrIHmxsHz8KGgL3xxv7eRI2R3hiCfkzbAlGXF4pRc3CzyJ0HaQsu8UIVNERGd5KlcHvJEyzn1nEfG20zyufYU0udJsrjAbY/s1080/Picsart_25-07-30_20-24-11-827.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
+                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgaJkbfaPlBjyMDqVoj5JvrluOJDDnJ67So2CFn-E-ZkA-9KJd9xY1G78S-Lx3NVc-bwXuT3hlPcs6KInDyrjUNbm1DPhpgnrIHmxsHz8KGgL3xxv7eRI2R3hiCfkzbAlGXF4pRc3CzyJ0HaQsu8UIVNERGd5KlcHvJEyzn1nEfG20zyufYU0udJsrjAbY/s1080/Picsart_25-07-30_20-24-11-827.png" alt="Buy Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text win";
             } else {
-                // Replace the text with an image for SELL signal
                 predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjFLllSpdZAm22hThc-34KazmFT8QgykmYFYkM_EaIJz4C0Mh6Jzbe92dUVvsZoIzeIEz4tezr_Zakh78oghCiP2phrB_8DWOAc8bM4OoxmowJ4Zk1p8LU8ReXYBFhrE4LkZn31AuMmd4KZy6MJhe-4pG_OP2nqEcQOvMHijOHxb6ohrTBip_Vsbupr33s/s1080/Picsart_25-07-30_20-23-54-958.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text loss";
             }
@@ -688,7 +853,6 @@
         
         function executeTrade(action) {
             alert(`Trade executed: ${action.toUpperCase()} signal`);
-            // In a real app, you would connect to trading API here
         }
     </script>
 </body>
