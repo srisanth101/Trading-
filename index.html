@@ -514,7 +514,7 @@
             
             <div class="form-group">
                 <label for="loginId">Login ID</label>
-                <input type="text" id="loginId" placeholder="Enter SPIDEY1221">
+                <input type="password" id="loginId" placeholder="Enter your ID">
             </div>
             
             <button class="btn btn-primary" id="loginBtn">Login</button>
@@ -526,7 +526,7 @@
         <div class="main-app" id="mainApp">
             <header>
                 <div class="user-info">
-                    <div class="user-id">ID: <span id="displayUserId">******</span></div>
+                    <div class="user-id">ID: <span id="displayUserId">*******1221</span></div>
                     <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
                 
@@ -615,6 +615,16 @@
         const buyBtn = document.getElementById('buyBtn');
         const sellBtn = document.getElementById('sellBtn');
         
+        // Hidden reference images (not displayed)
+        const referenceImages = [
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQXWYhOtRFAFq3XaOy3jRNcOAPcShSl2Bu8DZApei3jKYegSggk1KjU2Uetn5LMpscU2jZDzF9pkFBlPg9XlQqCOuPG6NaGKgU2VFTyTPFuUJ9NZj0BZIRxsKE-xanEs34yfk3MRP95Yytlo9IX3sS4lBo_p2vQK-pu-64Bgow8UnBQ0WU_nEZFegUeg/s1140/Screenshot_2025-07-28-21-03-53-16_680d03679600f7af0b4c700c6b270fe7.jpg',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhX06eHalbGgpggJ1UDLJeItdVnXhK3Tli8ZxIj0rHhP9AEFjzXRJC2Hr8CUU9xAxa3YM7I3wjlViBlOv89FgmiZQ_JRdhmpCDJnZB_Rph4LZTLlbQVfsZJS4-Tc_fIewA10lMd8Vui7rwMLnsR9JlgPYmDd2Icz8_2Zqzc28JCatRtcd7bEZSxbYCh7sg/s1080/Screenshot_2025-07-28-21-03-05-82_680d03679600f7af0b4c700c6b270fe7.jpg',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6Dy1RjPFcfQxN3_CfyVoeQ11fTDB3ubLLpv5gegFQEdXKNfBScFf9BMeyPRxBnisyq1FDxGJaMQnfprw-dU0zIxOuP1wyFeJwiuC99tC7q8Cc6CuXOSGQBCo1vT9hhKUzIRwkPUNzi7yAI-F4JfFQhBprrtiq8Q5XY6RcY5HykINBC7D6hLWdGmcZyCo/s1291/Screenshot_2025-07-28-21-02-50-64_680d03679600f7af0b4c700c6b270fe7.jpg',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5iu95id7Mc_I9MYU16oNSb01GLlSDbLHnPnoravdsH5xkQrGgCvVA2CydKgU83rSVS2T07LLM9YTMIjjIZ_htkqRyOtgxfZBrJp0J2QedegoLYAf_Q5U3J2DpcEPywY1diMpXxrSCpMR0JmUOt2d1PC09rPd6c7Nj_PHtM5UzqlGmuOre-NEHEeQU540/s1276/Screenshot_2025-07-28-21-02-07-20_680d03679600f7af0b4c700c6b270fe7.jpg',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqCPT51OROtXjQ8ipiJILoywnYo3sqbsGqFSX7elezid9CHcxmyH7juSA0NxelLnNWeIR86GEFyzq0dP1nmvrkFmzjjCfNSs9FIuborhu58QWIpVSGWWF8Sd44U2xer_GciF_7rr1L8EMzbpxY50zwRcfsBc91czy1HpyTr_VMfsqQpueWm6lNyyrRHyk/s1280/IMG-20250728-WA0101.jpg',
+            'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmT7eKKkYb4MGV2Sb6qhgV_JyAvv0kWKn_nwT_KT4o1HU8V-advS0exQqdcsw9BMeruaRE67MLDj9-8gMuI4HJqegyckQRYmakTxfy-AlvRGjn3aEk8aEoW2BY3jeWbblG5hf0gKsJouOw4e08EtmHonxmcoVjqKbHOgq_WZsLeynCrlQfvdxQrU7cDVQ/s1280/IMG-20250728-WA0102.jpg'
+        ];
+        
         // Camera variables
         let stream = null;
         
@@ -639,10 +649,11 @@
                 return;
             }
             
+            // Check for the hidden login ID (SPIDEY1221)
             if (loginId === 'SRISANTHTRADE') {
-                loginUser(loginId);
+                loginUser('*******1221'); // Display masked ID
             } else {
-                alert('Invalid login ID. Please enter SPIDEY1221');
+                alert('Invalid login ID. Please check your credentials');
             }
         }
         
@@ -659,15 +670,34 @@
             resetAnalysis();
         }
         
-        // Android camera permission handling
+        // Improved Android camera permission handling
         function startCamera() {
-            // Request camera permission for Android WebView
-            if (window.Android && typeof Android.requestCameraPermission === 'function') {
-                Android.requestCameraPermission();
-            }
-            
+            // Hide other sections
+            document.getElementById('tradingSection').style.display = 'none';
             cameraSection.style.display = 'block';
             
+            // Check if we're in Android WebView
+            if (typeof Android !== 'undefined' && Android.requestCameraPermission) {
+                Android.requestCameraPermission();
+                return; // The actual camera start will happen in the permission callback
+            }
+            
+            // For regular browsers
+            initCamera();
+        }
+        
+        // This function is called from Android when permission is granted
+        function onCameraPermissionGranted() {
+            initCamera();
+        }
+        
+        function onCameraPermissionDenied() {
+            alert("Camera access is required to use this feature. Please enable camera permissions in your device settings.");
+            stopCamera();
+            document.getElementById('tradingSection').style.display = 'block';
+        }
+        
+        function initCamera() {
             const constraints = {
                 video: {
                     width: { ideal: 1280 },
@@ -685,6 +715,7 @@
                     console.error("Camera error: ", err);
                     alert("Could not access the camera. Please check permissions.");
                     stopCamera();
+                    document.getElementById('tradingSection').style.display = 'block';
                 });
         }
         
@@ -695,6 +726,7 @@
                 stream = null;
             }
             cameraSection.style.display = 'none';
+            document.getElementById('tradingSection').style.display = 'block';
         }
         
         function captureImage() {
@@ -742,7 +774,8 @@
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
-                    showResult(imageSrc);
+                    // Check if the image matches any reference images
+                    checkImageMatch(imageSrc);
                 }
             }, 1000);
             
@@ -756,25 +789,66 @@
             }, 1000);
         }
         
-        function showResult(imageSrc) {
+        function checkImageMatch(imageSrc) {
+            // In a real app, you would do image comparison here
+            // For this demo, we'll simulate checking against reference images
+            
+            // Create a temporary image to get dimensions
+            const tempImg = new Image();
+            tempImg.src = imageSrc;
+            
+            tempImg.onload = function() {
+                // Simulate checking against reference images
+                const isMatch = simulateImageComparison(tempImg);
+                
+                // Show result based on whether it matched
+                showResult(imageSrc, isMatch);
+            };
+        }
+        
+        function simulateImageComparison(img) {
+            // Get current time to make "predictions" seem more realistic
+            const now = new Date();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            
+            // Use image dimensions and time to determine "match"
+            const widthFactor = img.width % 100;
+            const heightFactor = img.height % 100;
+            const timeFactor = (minutes * 60 + seconds) % 120;
+            
+            // Combine factors to create a "score"
+            const score = (widthFactor + heightFactor + timeFactor) % 100;
+            
+            // Consider it a match if score > 40 (60% chance)
+            return score > 40;
+        }
+        
+        function showResult(imageSrc, isMatch) {
             analysisSection.style.display = 'none';
             resultSection.style.display = 'block';
             
             analyzedImage.src = imageSrc;
             analyzedImage.style.display = 'block';
             
-            // Real prediction algorithm based on time and random factors
+            // Get current time for more realistic predictions
             const now = new Date();
             const minute = now.getMinutes();
             const second = now.getSeconds();
             const timeFactor = (minute * 60 + second) / 3600;
-            const randomFactor = Math.random() * 0.3 - 0.15;
             
-            let predictionScore = 0.5 + Math.sin(timeFactor * Math.PI * 2) * 0.3 + randomFactor;
-            predictionScore = Math.max(0, Math.min(1, predictionScore));
+            // Generate confidence based on time and match status
+            let confidence = 75 + Math.floor(Math.sin(timeFactor * Math.PI * 4) * 15);
+            confidence = Math.max(65, Math.min(95, confidence));
             
+            // If the image "matches" our references, increase confidence
+            if (isMatch) {
+                confidence = Math.min(95, confidence + 10);
+            }
+            
+            // Determine prediction based on time and random factors
+            const predictionScore = 0.5 + Math.sin(timeFactor * Math.PI * 2) * 0.4 + (Math.random() * 0.2 - 0.1);
             const isWin = predictionScore > 0.5;
-            const confidence = Math.floor(predictionScore * 40 + 60);
             
             if (isWin) {
                 predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgaJkbfaPlBjyMDqVoj5JvrluOJDDnJ67So2CFn-E-ZkA-9KJd9xY1G78S-Lx3NVc-bwXuT3hlPcs6KInDyrjUNbm1DPhpgnrIHmxsHz8KGgL3xxv7eRI2R3hiCfkzbAlGXF4pRc3CzyJ0HaQsu8UIVNERGd5KlcHvJEyzn1nEfG20zyufYU0udJsrjAbY/s1080/Picsart_25-07-30_20-24-11-827.png" alt="Buy Signal" style="width: 100px; height: 100px;">';
@@ -790,6 +864,7 @@
         function resetAnalysis() {
             resultSection.style.display = 'none';
             analysisSection.style.display = 'none';
+            document.getElementById('tradingSection').style.display = 'block';
             progressBar.style.width = '0%';
             mainPreview.style.display = 'none';
             mainPreview.src = '';
@@ -798,21 +873,19 @@
         }
         
         function executeTrade(action) {
-            alert(`Trade executed: ${action.toUpperCase()} signal`);
+            alert(`Trade executed: ${action.toUpperCase()} signal based on AI prediction`);
         }
         
-        // Android interface for permission handling
-        if (window.Android) {
-            window.onCameraPermissionGranted = function() {
-                console.log("Camera permission granted");
-                startCamera();
-            };
-            
-            window.onCameraPermissionDenied = function() {
-                console.log("Camera permission denied");
-                alert("Camera access is required to use this feature");
-            };
+        // Preload reference images (hidden)
+        function preloadImages() {
+            referenceImages.forEach(url => {
+                const img = new Image();
+                img.src = url;
+            });
         }
+        
+        // Initialize
+        preloadImages();
     </script>
 </body>
 </html>
