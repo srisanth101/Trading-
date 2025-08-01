@@ -212,24 +212,55 @@
             display: none;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .user-info {
+        .app-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .app-header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .app-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .app-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .app-title {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         .user-id {
             font-weight: bold;
             color: var(--primary-color);
+            font-size: 0.9rem;
         }
         
         .logout-btn {
@@ -240,6 +271,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.8rem;
         }
         
         .logout-btn:hover {
@@ -499,6 +531,22 @@
             .trade-btn {
                 width: 100%;
             }
+            
+            .app-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .app-header-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .user-info {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 </head>
@@ -524,15 +572,18 @@
         
         <!-- Main App Section -->
         <div class="main-app" id="mainApp">
-            <header>
+            <div class="app-header">
+                <div class="app-header-left">
+                    <div class="app-logo">
+                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
+                    </div>
+                    <div class="app-title">AI Predict Trading Pro</div>
+                </div>
                 <div class="user-info">
                     <div class="user-id">ID: <span id="displayUserId">*******1221</span></div>
                     <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
-                
-                <h1>AI Predict Trading Pro</h1>
-                <div class="subtitle">Advanced trading prediction system By : K.G.Srisanth</div>
-            </header>
+            </div>
             
             <div class="section" id="tradingSection">
                 <h2>Select Trading Chart</h2>
@@ -586,7 +637,7 @@
     </div>
 
     <script>
-        // DOM elements
+         // DOM elements
         const loginSection = document.getElementById('loginSection');
         const mainApp = document.getElementById('mainApp');
         const loginBtn = document.getElementById('loginBtn');
@@ -614,7 +665,7 @@
         const newPredictionBtn = document.getElementById('newPredictionBtn');
         const buyBtn = document.getElementById('buyBtn');
         const sellBtn = document.getElementById('sellBtn');
-        
+    
         // Hidden reference images (not displayed)
         const referenceImages = [
             'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQXWYhOtRFAFq3XaOy3jRNcOAPcShSl2Bu8DZApei3jKYegSggk1KjU2Uetn5LMpscU2jZDzF9pkFBlPg9XlQqCOuPG6NaGKgU2VFTyTPFuUJ9NZj0BZIRxsKE-xanEs34yfk3MRP95Yytlo9IX3sS4lBo_p2vQK-pu-64Bgow8UnBQ0WU_nEZFegUeg/s1140/Screenshot_2025-07-28-21-03-53-16_680d03679600f7af0b4c700c6b270fe7.jpg',
@@ -640,7 +691,20 @@
         buyBtn.addEventListener('click', () => executeTrade('buy'));
         sellBtn.addEventListener('click', () => executeTrade('sell'));
         
-        // Functions
+        // Check if user is already logged in when page loads
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+        
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userId = localStorage.getItem('userId');
+            
+            if (isLoggedIn && userId) {
+                loginUser(userId);
+                // Open camera directly after login
+                startCamera();
+            }
+        }
+        
         function handleLogin() {
             const loginId = loginIdInput.value.trim();
             
@@ -651,7 +715,13 @@
             
             // Check for the hidden login ID (SPIDEY1221)
             if (loginId === 'SPIDEY1221') {
-                loginUser('*******1221'); // Display masked ID
+                const displayId = '*******1221';
+                // Store login status in localStorage
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userId', displayId);
+                loginUser(displayId);
+                // Open camera directly after login
+                startCamera();
             } else {
                 alert('Invalid login ID. Please check your credentials');
             }
@@ -664,6 +734,10 @@
         }
         
         function logoutUser() {
+            // Clear login status from localStorage
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userId');
+            
             mainApp.style.display = 'none';
             loginSection.style.display = 'block';
             loginIdInput.value = '';
