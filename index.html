@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Predict Trading Pro</title>
+    <title>AI Trading Predictor Pro</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
         
@@ -27,7 +27,7 @@
         body {
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: url('https://blogger.googleusercontent.com/img/a/AVvXsEjXyHid96A_suWGrMztC2OqSZLnS4U7rUDvjwHYXbTrjdAdhYs8q7fCIu33rsu4oTNUKiUwrrzs_F4t9SmiInPKxOaPMNQjdxIr-vzmUrHydvivUmicUK-dpYynziKJzcuQ0wusixp3tRvpoidn-gHWR3dCH5B7tRTFGxrUjz5R1N-UHlmpaZ-L2nrQnkc') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
             background-size: cover;
             position: relative;
             color: white;
@@ -48,7 +48,7 @@
         
         .container {
             max-width: 1000px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
             backdrop-filter: blur(8px);
             background-color: rgba(0, 0, 0, 0.5);
@@ -104,6 +104,7 @@
         .form-group {
             margin-bottom: 20px;
             text-align: left;
+            position: relative;
         }
         
         label {
@@ -130,6 +131,19 @@
             border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
             background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 40px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .password-toggle:hover {
+            color: var(--primary-color);
         }
         
         .btn {
@@ -317,6 +331,7 @@
         .preview-container {
             text-align: center;
             margin: 25px 0;
+            position: relative;
         }
         
         #mainPreview {
@@ -324,6 +339,24 @@
             max-height: 400px;
             border-radius: 10px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            display: none;
+        }
+        
+        .remove-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(231, 76, 60, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
             display: none;
         }
         
@@ -507,11 +540,39 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
         }
         
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateX(200%);
+            transition: transform 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            border-left: 5px solid var(--success-color);
+        }
+        
+        .notification.error {
+            border-left: 5px solid var(--danger-color);
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
                 border-radius: 15px;
+                margin: 10px;
             }
             
             h1 {
@@ -555,14 +616,15 @@
         <!-- Login Section -->
         <div class="login-section" id="loginSection">
             <div class="logo">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
+                <img src="https://cdn-icons-png.flaticon.com/512/4772/4772064.png" alt="AI Logo">
             </div>
-            <h1>AI Predict Trading Pro</h1>
+            <h1>AI Trading Predictor Pro</h1>
             <div class="subtitle">Advanced trading prediction system with 92% accuracy</div>
             
             <div class="form-group">
                 <label for="loginId">Login ID</label>
                 <input type="password" id="loginId" placeholder="Enter your ID">
+                <span class="password-toggle" id="togglePassword">👁️</span>
             </div>
             
             <button class="btn btn-primary" id="loginBtn">Login</button>
@@ -575,9 +637,9 @@
             <div class="app-header">
                 <div class="app-header-left">
                     <div class="app-logo">
-                        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
+                        <img src="https://cdn-icons-png.flaticon.com/512/4772/4772064.png" alt="AI Logo">
                     </div>
-                    <div class="app-title">AI Predict Trading Pro</div>
+                    <div class="app-title">AI Trading Predictor Pro</div>
                 </div>
                 <div class="user-info">
                     <div class="user-id">ID: <span id="displayUserId">*******1221</span></div>
@@ -595,6 +657,7 @@
                 
                 <div class="preview-container">
                     <img id="mainPreview" alt="Selected chart preview">
+                    <button class="remove-image" id="removeImageBtn">×</button>
                 </div>
             </div>
             
@@ -636,20 +699,26 @@
         </div>
     </div>
 
+    <!-- Notification System -->
+    <div class="notification hidden" id="notification"></div>
+
     <script>
-         // DOM elements
+        // DOM elements
         const loginSection = document.getElementById('loginSection');
         const mainApp = document.getElementById('mainApp');
         const loginBtn = document.getElementById('loginBtn');
         const loginIdInput = document.getElementById('loginId');
+        const togglePassword = document.getElementById('togglePassword');
         const displayUserId = document.getElementById('displayUserId');
         const logoutBtn = document.getElementById('logoutBtn');
+        const notification = document.getElementById('notification');
         
         // Trading elements
         const uploadBtn = document.getElementById('uploadBtn');
         const cameraBtn = document.getElementById('cameraBtn');
         const fileInput = document.getElementById('fileInput');
         const mainPreview = document.getElementById('mainPreview');
+        const removeImageBtn = document.getElementById('removeImageBtn');
         const cameraSection = document.getElementById('cameraSection');
         const cameraView = document.getElementById('cameraView');
         const captureBtn = document.getElementById('captureBtn');
@@ -678,9 +747,11 @@
         
         // Camera variables
         let stream = null;
+        let analysisInProgress = false;
         
         // Event listeners
         loginBtn.addEventListener('click', handleLogin);
+        togglePassword.addEventListener('click', togglePasswordVisibility);
         logoutBtn.addEventListener('click', logoutUser);
         uploadBtn.addEventListener('click', () => fileInput.click());
         cameraBtn.addEventListener('click', startCamera);
@@ -690,9 +761,25 @@
         newPredictionBtn.addEventListener('click', resetAnalysis);
         buyBtn.addEventListener('click', () => executeTrade('buy'));
         sellBtn.addEventListener('click', () => executeTrade('sell'));
+        removeImageBtn.addEventListener('click', removeImage);
         
         // Check if user is already logged in when page loads
         document.addEventListener('DOMContentLoaded', checkLoginStatus);
+        
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function togglePasswordVisibility() {
+            const type = loginIdInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            loginIdInput.setAttribute('type', type);
+            togglePassword.textContent = type === 'password' ? '👁️' : '🔒';
+        }
         
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -700,8 +787,6 @@
             
             if (isLoggedIn && userId) {
                 loginUser(userId);
-                // Open camera directly after login
-                startCamera();
             }
         }
         
@@ -709,21 +794,20 @@
             const loginId = loginIdInput.value.trim();
             
             if (!loginId) {
-                alert('Please enter your login ID');
+                showNotification('Please enter your login ID', 'error');
                 return;
             }
             
-            // Check for the hidden login ID (SPIDEY1221)
+            // Check for the hidden login ID
             if (loginId === 'SRISANTHTRADE') {
                 const displayId = '******TRADE';
                 // Store login status in localStorage
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userId', displayId);
                 loginUser(displayId);
-                // Open camera directly after login
-                startCamera();
+                showNotification('Login successful!', 'success');
             } else {
-                alert('Invalid login ID. Please check your credentials');
+                showNotification('Invalid login ID. Please check your credentials', 'error');
             }
         }
         
@@ -742,10 +826,15 @@
             loginSection.style.display = 'block';
             loginIdInput.value = '';
             resetAnalysis();
+            showNotification('Logged out successfully', 'success');
         }
         
-        // Improved Android camera permission handling
         function startCamera() {
+            if (analysisInProgress) {
+                showNotification('Analysis already in progress', 'error');
+                return;
+            }
+            
             // Hide other sections
             document.getElementById('tradingSection').style.display = 'none';
             cameraSection.style.display = 'block';
@@ -766,7 +855,7 @@
         }
         
         function onCameraPermissionDenied() {
-            alert("Camera access is required to use this feature. Please enable camera permissions in your device settings.");
+            showNotification("Camera access is required to use this feature", 'error');
             stopCamera();
             document.getElementById('tradingSection').style.display = 'block';
         }
@@ -787,7 +876,7 @@
                 })
                 .catch(function(err) {
                     console.error("Camera error: ", err);
-                    alert("Could not access the camera. Please check permissions.");
+                    showNotification("Could not access the camera", 'error');
                     stopCamera();
                     document.getElementById('tradingSection').style.display = 'block';
                 });
@@ -814,29 +903,44 @@
             const imageData = canvas.toDataURL('image/jpeg');
             mainPreview.src = imageData;
             mainPreview.style.display = 'block';
+            removeImageBtn.style.display = 'block';
             
             stopCamera();
             startAnalysis(imageData);
         }
         
+        function removeImage() {
+            mainPreview.src = '';
+            mainPreview.style.display = 'none';
+            removeImageBtn.style.display = 'none';
+            fileInput.value = '';
+        }
+        
         function handleFileUpload(event) {
+            if (analysisInProgress) {
+                showNotification('Analysis already in progress', 'error');
+                return;
+            }
+            
             const file = event.target.files[0];
             if (file && file.type.match('image.*')) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     mainPreview.src = e.target.result;
                     mainPreview.style.display = 'block';
+                    removeImageBtn.style.display = 'block';
                     startAnalysis(e.target.result);
                 };
                 reader.readAsDataURL(file);
             } else {
-                alert('Please select a valid image file');
+                showNotification('Please select a valid image file', 'error');
             }
         }
         
         function startAnalysis(imageSrc) {
+            analysisInProgress = true;
             analysisSection.style.display = 'block';
-            mainPreview.style.display = 'none'; // Hide preview during analysis
+            document.getElementById('tradingSection').style.display = 'none';
             
             let progress = 0;
             let seconds = 5;
@@ -899,6 +1003,7 @@
         }
         
         function showResult(imageSrc, isMatch) {
+            analysisInProgress = false;
             analysisSection.style.display = 'none';
             resultSection.style.display = 'block';
             
@@ -925,10 +1030,10 @@
             const isWin = predictionScore > 0.5;
             
             if (isWin) {
-                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjSUGRg-zHllu7GQ8FShpyok32vV-701qBzXhvXF8LwZtwQ5ru5h3n2mJSgtmLk4pOTTreUgZNKBJFuu0JpeiXlOGT-TvB_7W0r4sRw7Mo6mzvWujqrGGzYFCBk2d02x6mMQIvBs7RSam48cn7oMq1iPPGzdgitWmVFEA7co479PX_K8xjcDyNncpTwuPM/s1620/Picsart_25-08-01_05-53-44-726.png" alt="Buy Signal" style="width: 100px; height: 100px;">';
+                predictionResult.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/463/463574.png" alt="Buy Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text win";
             } else {
-                predictionResult.innerHTML = '<img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAvSlyGBjyLAq3p9NQnmrjjK-6pn-eaGX_Mm-UxdFHHSg7SaeiBc0KDkl2PQOYJXgq2HjF0ooTQ00G3bYq-tUC7fT32FwNmRFRW5AuYUotdjtEbj8VuYFdwdtMQ6xC0RYzjNw_xh44YmIVvWiwJYz3CuNRP51vY_LwQZN6PnfvDLQCVDVMFwqKsPbXvhs/s1620/Picsart_25-08-01_05-53-02-952.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
+                predictionResult.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/463/463612.png" alt="Sell Signal" style="width: 100px; height: 100px;">';
                 predictionResult.className = "prediction-text loss";
             }
             
@@ -936,18 +1041,18 @@
         }
         
         function resetAnalysis() {
+            analysisInProgress = false;
             resultSection.style.display = 'none';
             analysisSection.style.display = 'none';
             document.getElementById('tradingSection').style.display = 'block';
             progressBar.style.width = '0%';
-            mainPreview.style.display = 'none';
-            mainPreview.src = '';
+            removeImage();
             analyzedImage.style.display = 'none';
             fileInput.value = '';
         }
         
         function executeTrade(action) {
-            alert(`Trade executed: ${action.toUpperCase()} signal based on AI prediction`);
+            showNotification(`Trade executed: ${action.toUpperCase()} signal based on AI prediction`, 'success');
         }
         
         // Preload reference images (hidden)
