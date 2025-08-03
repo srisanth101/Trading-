@@ -247,6 +247,46 @@
             display: none;
         }
         
+        .login-section {
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 50px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .login-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            background-color: var(--danger-color);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 15px;
@@ -260,11 +300,33 @@
             .btn {
                 width: 100%;
             }
+            
+            .logout-btn {
+                position: static;
+                margin-top: 15px;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="loginContainer">
+        <div class="header">
+            <div class="logo">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
+            </div>
+            <h1>AI Chart Predictor</h1>
+            <p>Enter your access key to continue</p>
+        </div>
+        
+        <div class="section login-section">
+            <input type="password" class="login-input" id="accessKeyInput" placeholder="Enter Access Key">
+            <button class="btn btn-primary login-btn" id="loginBtn">Login</button>
+        </div>
+    </div>
+
+    <div class="container" id="appContainer" style="display: none;">
+        <button class="logout-btn" id="logoutBtn">Logout</button>
         <div class="header">
             <div class="logo">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
@@ -305,6 +367,7 @@
                 </div>
                 <div class="countdown-text">Processing chart data... <span id="countdown">5</span>s</div>
             </div>
+            <div id="hiddenDataResult" style="margin-top: 20px; display: none;"></div>
         </div>
         
         <div class="section result-section" id="resultSection">
@@ -313,6 +376,7 @@
                 <img id="analyzedImage" src="" alt="Analyzed chart">
                 <div class="prediction-text" id="predictionResult"></div>
                 <div class="confidence-text">Confidence: <span id="confidenceLevel">85%</span></div>
+                <div id="hiddenMessage" style="margin-top: 15px; padding: 10px; background-color: rgba(0,0,0,0.5); border-radius: 8px; display: none;"></div>
             </div>
             <button class="btn btn-primary" id="newPredictionBtn">New Analysis</button>
         </div>
@@ -320,6 +384,11 @@
 
     <script>
         // DOM elements
+        const loginContainer = document.getElementById('loginContainer');
+        const appContainer = document.getElementById('appContainer');
+        const accessKeyInput = document.getElementById('accessKeyInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
         const uploadBtn = document.getElementById('uploadBtn');
         const cameraBtn = document.getElementById('cameraBtn');
         const fileInput = document.getElementById('fileInput');
@@ -338,6 +407,8 @@
         const predictionResult = document.getElementById('predictionResult');
         const confidenceLevel = document.getElementById('confidenceLevel');
         const newPredictionBtn = document.getElementById('newPredictionBtn');
+        const hiddenMessage = document.getElementById('hiddenMessage');
+        const hiddenDataResult = document.getElementById('hiddenDataResult');
         
         // Trading patterns
         const patterns = [
@@ -346,11 +417,24 @@
             { name: "Neutral", confidence: 78, icon: "🟡" }
         ];
         
+        // Hidden data patterns (for scanning)
+        const hiddenMessages = [
+            "Next signal: BUY at 1.2350 with target 1.2450",
+            "Market will reverse soon, prepare for SELL",
+            "Strong uptrend detected, next 24 hours bullish",
+            "Hidden divergence detected, potential reversal",
+            "Institutional activity detected at current levels"
+        ];
+        
         // Camera variables
         let stream = null;
         let analysisInProgress = false;
+        let isLoggedIn = false;
+        const ACCESS_KEY = "SPIDEYTRADE";
         
         // Event listeners
+        loginBtn.addEventListener('click', handleLogin);
+        logoutBtn.addEventListener('click', handleLogout);
         uploadBtn.addEventListener('click', () => fileInput.click());
         cameraBtn.addEventListener('click', startCamera);
         fileInput.addEventListener('change', handleFileUpload);
@@ -359,8 +443,41 @@
         newPredictionBtn.addEventListener('click', resetAnalysis);
         removeImageBtn.addEventListener('click', removeImage);
         
+        // Check if already logged in from sessionStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLogin = sessionStorage.getItem('chartPredictorLoggedIn');
+            if (savedLogin === 'true') {
+                loginContainer.style.display = 'none';
+                appContainer.style.display = 'block';
+                isLoggedIn = true;
+            }
+        });
+        
+        function handleLogin() {
+            const enteredKey = accessKeyInput.value.trim();
+            if (enteredKey === ACCESS_KEY) {
+                loginContainer.style.display = 'none';
+                appContainer.style.display = 'block';
+                isLoggedIn = true;
+                sessionStorage.setItem('chartPredictorLoggedIn', 'true');
+                accessKeyInput.value = '';
+            } else {
+                alert('Invalid access key. Please try again.');
+                accessKeyInput.value = '';
+                accessKeyInput.focus();
+            }
+        }
+        
+        function handleLogout() {
+            isLoggedIn = false;
+            sessionStorage.removeItem('chartPredictorLoggedIn');
+            appContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+            resetAnalysis();
+        }
+        
         function startCamera() {
-            if (analysisInProgress) return;
+            if (analysisInProgress || !isLoggedIn) return;
             
             document.getElementById('tradingSection').style.display = 'none';
             cameraSection.style.display = 'block';
@@ -395,7 +512,7 @@
         }
         
         function captureImage() {
-            if (!stream) return;
+            if (!stream || !isLoggedIn) return;
             
             canvas.width = cameraView.videoWidth;
             canvas.height = cameraView.videoHeight;
@@ -412,7 +529,7 @@
         }
         
         function handleFileUpload(event) {
-            if (analysisInProgress) return;
+            if (analysisInProgress || !isLoggedIn) return;
             
             const file = event.target.files[0];
             if (file && file.type.match('image.*')) {
@@ -435,9 +552,13 @@
         }
         
         function startAnalysis(imageSrc) {
+            if (!isLoggedIn) return;
+            
             analysisInProgress = true;
             analysisSection.style.display = 'block';
             document.getElementById('tradingSection').style.display = 'none';
+            hiddenDataResult.style.display = 'none';
+            hiddenMessage.style.display = 'none';
             
             let progress = 0;
             let seconds = 5;
@@ -449,6 +570,8 @@
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
+                    // Check for hidden data in the image
+                    checkForHiddenData(imageSrc);
                     showResult(imageSrc);
                 }
             }, 1000);
@@ -461,6 +584,20 @@
                     clearInterval(countdownInterval);
                 }
             }, 1000);
+        }
+        
+        function checkForHiddenData(imageSrc) {
+            // Simulate checking for hidden data in the image
+            const hasHiddenData = Math.random() > 0.7; // 30% chance of hidden data
+            
+            if (hasHiddenData) {
+                const randomMessage = hiddenMessages[Math.floor(Math.random() * hiddenMessages.length)];
+                hiddenDataResult.innerHTML = `<div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div><div style="margin-top: 5px;">${randomMessage}</div>`;
+                hiddenDataResult.style.display = 'block';
+                
+                hiddenMessage.textContent = randomMessage;
+                hiddenMessage.style.display = 'block';
+            }
         }
         
         function showResult(imageSrc) {
@@ -501,6 +638,8 @@
         }
         
         function resetAnalysis() {
+            if (!isLoggedIn) return;
+            
             analysisInProgress = false;
             resultSection.style.display = 'none';
             analysisSection.style.display = 'none';
@@ -509,6 +648,8 @@
             removeImage();
             analyzedImage.style.display = 'none';
             fileInput.value = '';
+            hiddenMessage.style.display = 'none';
+            hiddenDataResult.style.display = 'none';
         }
     </script>
 </body>
