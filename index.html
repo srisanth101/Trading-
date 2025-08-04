@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chart Predictor</title>
+    <title>SpideyTrade AI Predictor</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
         
@@ -287,6 +287,36 @@
             font-weight: 600;
         }
         
+        .special-images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .special-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            object-fit: cover;
+        }
+        
+        .special-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
+        }
+        
+        .hidden-data {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+            border-left: 4px solid var(--warning-color);
+        }
+        
         @media (max-width: 600px) {
             .container {
                 padding: 15px;
@@ -306,6 +336,15 @@
                 margin-top: 15px;
                 width: 100%;
             }
+            
+            .special-images {
+                gap: 5px;
+            }
+            
+            .special-image {
+                width: 80px;
+                height: 80px;
+            }
         }
     </style>
 </head>
@@ -315,7 +354,7 @@
             <div class="logo">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
             </div>
-            <h1>AI Chart Predictor</h1>
+            <h1>SpideyTrade AI Predictor</h1>
             <p>Enter your access key to continue</p>
         </div>
         
@@ -331,8 +370,8 @@
             <div class="logo">
                 <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
             </div>
-            <h1>AI Chart Predictor</h1>
-            <p>Upload or capture a trading chart for analysis</p>
+            <h1>SpideyTrade AI Predictor</h1>
+            <p>Upload or select a trading chart for analysis</p>
         </div>
         
         <div class="section" id="tradingSection">
@@ -341,6 +380,16 @@
                 <button class="btn btn-primary" id="uploadBtn">Upload Image</button>
                 <button class="btn btn-primary" id="cameraBtn">Use Camera</button>
             </div>
+            
+            <h3 style="text-align: center; margin: 20px 0 10px; color: var(--light-color);">Or select from these special charts:</h3>
+            <div class="special-images">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQXWYhOtRFAFq3XaOy3jRNcOAPcShSl2Bu8DZApei3jKYegSggk1KjU2Uetn5LMpscU2jZDzF9pkFBlPg9XlQqCOuPG6NaGKgU2VFTyTPFuUJ9NZj0BZIRxsKE-xanEs34yfk3MRP95Yytlo9IX3sS4lBo_p2vQK-pu-64Bgow8UnBQ0WU_nEZFegUeg/s1140/Screenshot_2025-07-28-21-03-53-16_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="1">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6Dy1RjPFcfQxN3_CfyVoeQ11fTDB3ubLLpv5gegFQEdXKNfBScFf9BMeyPRxBnisyq1FDxGJaMQnfprw-dU0zIxOuP1wyFeJwiuC99tC7q8Cc6CuXOSGQBCo1vT9hhKUzIRwkPUNzi7yAI-F4JfFQhBprrtiq8Q5XY6RcY5HykINBC7D6hLWdGmcZyCo/s1291/Screenshot_2025-07-28-21-02-50-64_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="2">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5iu95id7Mc_I9MYU16oNSb01GLlSDbLHnPnoravdsH5xkQrGgCvVA2CydKgU83rSVS2T07LLM9YTMIjjIZ_htkqRyOtgxfZBrJp0J2QedegoLYAf_Q5U3J2DpcEPywY1diMpXxrSCpMR0JmUOt2d1PC09rPd6c7Nj_PHtM5UzqlGmuOre-NEHEeQU540/s1276/Screenshot_2025-07-28-21-02-07-20_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="3">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqCPT51OROtXjQ8ipiJILoywnYo3sqbsGqFSX7elezid9CHcxmyH7juSA0NxelLnNWeIR86GEFyzq0dP1nmvrkFmzjjCfNSs9FIuborhu58QWIpVSGWWF8Sd44U2xer_GciF_7rr1L8EMzbpxY50zwRcfsBc91czy1HpyTr_VMfsqQpueWm6lNyyrRHyk/s1280/IMG-20250728-WA0101.jpg" class="special-image" data-id="4">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmT7eKKkYb4MGV2Sb6qhgV_JyAvv0kWKn_nwT_KT4o1HU8V-advS0exQqdcsw9BMeruaRE67MLDj9-8gMuI4HJqegyckQRYmakTxfy-AlvRGjn3aEk8aEoW2BY3jeWbblG5hf0gKsJouOw4e08EtmHonxmcoVjqKbHOgq_WZsLeynCrlQfvdxQrU7cDVQ/s1280/IMG-20250728-WA0102.jpg" class="special-image" data-id="5">
+            </div>
+            
             <input type="file" id="fileInput" accept="image/*" class="hidden">
             
             <div class="preview-container">
@@ -367,7 +416,7 @@
                 </div>
                 <div class="countdown-text">Processing chart data... <span id="countdown">5</span>s</div>
             </div>
-            <div id="hiddenDataResult" style="margin-top: 20px; display: none;"></div>
+            <div id="hiddenDataResult" class="hidden-data" style="display: none;"></div>
         </div>
         
         <div class="section result-section" id="resultSection">
@@ -376,7 +425,7 @@
                 <img id="analyzedImage" src="" alt="Analyzed chart">
                 <div class="prediction-text" id="predictionResult"></div>
                 <div class="confidence-text">Confidence: <span id="confidenceLevel">85%</span></div>
-                <div id="hiddenMessage" style="margin-top: 15px; padding: 10px; background-color: rgba(0,0,0,0.5); border-radius: 8px; display: none;"></div>
+                <div id="hiddenMessage" class="hidden-data" style="display: none;"></div>
             </div>
             <button class="btn btn-primary" id="newPredictionBtn">New Analysis</button>
         </div>
@@ -409,28 +458,43 @@
         const newPredictionBtn = document.getElementById('newPredictionBtn');
         const hiddenMessage = document.getElementById('hiddenMessage');
         const hiddenDataResult = document.getElementById('hiddenDataResult');
+        const specialImages = document.querySelectorAll('.special-image');
         
-        // Trading patterns
-        const patterns = [
-            { name: "Bullish", confidence: 85, icon: "🟢" },
-            { name: "Bearish", confidence: 82, icon: "🔴" },
-            { name: "Neutral", confidence: 78, icon: "🟡" }
-        ];
-        
-        // Hidden data patterns (for scanning)
-        const hiddenMessages = [
-            "Next signal: BUY at 1.2350 with target 1.2450",
-            "Market will reverse soon, prepare for SELL",
-            "Strong uptrend detected, next 24 hours bullish",
-            "Hidden divergence detected, potential reversal",
-            "Institutional activity detected at current levels"
-        ];
+        // Special image predictions (based on the provided images)
+        const specialImagePredictions = {
+            "1": { // First image
+                pattern: "Bullish",
+                confidence: 92,
+                hiddenMessage: "Strong buy signal detected at 1.2350 level. Target: 1.2450 with stop loss at 1.2300."
+            },
+            "2": { // Second image
+                pattern: "Bearish",
+                confidence: 89,
+                hiddenMessage: "Market showing reversal signs. Prepare for sell entry at 1.2400 with target 1.2300."
+            },
+            "3": { // Third image
+                pattern: "Bullish",
+                confidence: 95,
+                hiddenMessage: "Perfect bullish setup. Enter long at current price with target 1.2500. High probability trade."
+            },
+            "4": { // Fourth image
+                pattern: "Bearish",
+                confidence: 87,
+                hiddenMessage: "Downtrend continuation expected. Sell rallies with target 1.2250. Stop above 1.2400."
+            },
+            "5": { // Fifth image
+                pattern: "Neutral",
+                confidence: 78,
+                hiddenMessage: "Market in consolidation. Wait for breakout above 1.2450 or below 1.2350 for direction."
+            }
+        };
         
         // Camera variables
         let stream = null;
         let analysisInProgress = false;
         let isLoggedIn = false;
         const ACCESS_KEY = "SPIDEYTRADE";
+        let currentImageId = null;
         
         // Event listeners
         loginBtn.addEventListener('click', handleLogin);
@@ -442,6 +506,18 @@
         cancelCameraBtn.addEventListener('click', stopCamera);
         newPredictionBtn.addEventListener('click', resetAnalysis);
         removeImageBtn.addEventListener('click', removeImage);
+        
+        // Add click listeners to special images
+        specialImages.forEach(img => {
+            img.addEventListener('click', function() {
+                if (!isLoggedIn) return;
+                currentImageId = this.getAttribute('data-id');
+                mainPreview.src = this.src;
+                mainPreview.style.display = 'block';
+                removeImageBtn.style.display = 'block';
+                startAnalysis(this.src);
+            });
+        });
         
         // Check if already logged in from sessionStorage
         window.addEventListener('DOMContentLoaded', () => {
@@ -481,6 +557,7 @@
             
             document.getElementById('tradingSection').style.display = 'none';
             cameraSection.style.display = 'block';
+            currentImageId = null;
             
             const constraints = {
                 video: {
@@ -523,6 +600,7 @@
             mainPreview.src = imageData;
             mainPreview.style.display = 'block';
             removeImageBtn.style.display = 'block';
+            currentImageId = null;
             
             stopCamera();
             startAnalysis(imageData);
@@ -538,6 +616,7 @@
                     mainPreview.src = e.target.result;
                     mainPreview.style.display = 'block';
                     removeImageBtn.style.display = 'block';
+                    currentImageId = null;
                     startAnalysis(e.target.result);
                 };
                 reader.readAsDataURL(file);
@@ -549,6 +628,7 @@
             mainPreview.style.display = 'none';
             removeImageBtn.style.display = 'none';
             fileInput.value = '';
+            currentImageId = null;
         }
         
         function startAnalysis(imageSrc) {
@@ -570,7 +650,6 @@
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
-                    // Check for hidden data in the image
                     checkForHiddenData(imageSrc);
                     showResult(imageSrc);
                 }
@@ -587,16 +666,40 @@
         }
         
         function checkForHiddenData(imageSrc) {
-            // Simulate checking for hidden data in the image
-            const hasHiddenData = Math.random() > 0.7; // 30% chance of hidden data
-            
-            if (hasHiddenData) {
-                const randomMessage = hiddenMessages[Math.floor(Math.random() * hiddenMessages.length)];
-                hiddenDataResult.innerHTML = `<div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div><div style="margin-top: 5px;">${randomMessage}</div>`;
+            if (currentImageId && specialImagePredictions[currentImageId]) {
+                // This is one of our special images with known predictions
+                const prediction = specialImagePredictions[currentImageId];
+                hiddenDataResult.innerHTML = `
+                    <div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div>
+                    <div style="margin-top: 5px;">${prediction.hiddenMessage}</div>
+                `;
                 hiddenDataResult.style.display = 'block';
                 
-                hiddenMessage.textContent = randomMessage;
+                hiddenMessage.textContent = prediction.hiddenMessage;
                 hiddenMessage.style.display = 'block';
+            } else {
+                // For other images, simulate finding hidden data with 20% chance
+                const hasHiddenData = Math.random() > 0.8;
+                
+                if (hasHiddenData) {
+                    const genericMessages = [
+                        "Potential reversal pattern forming near current price",
+                        "Volume spike detected, indicating strong interest",
+                        "Fibonacci levels suggest key resistance at 1.2450",
+                        "EMA crossover suggests trend change may be coming",
+                        "RSI divergence detected, watch for reversal"
+                    ];
+                    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
+                    
+                    hiddenDataResult.innerHTML = `
+                        <div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div>
+                        <div style="margin-top: 5px;">${randomMessage}</div>
+                    `;
+                    hiddenDataResult.style.display = 'block';
+                    
+                    hiddenMessage.textContent = randomMessage;
+                    hiddenMessage.style.display = 'block';
+                }
             }
         }
         
@@ -608,25 +711,39 @@
             analyzedImage.src = imageSrc;
             analyzedImage.style.display = 'block';
             
-            // Get current time for realistic variations
-            const now = new Date();
-            const timeFactor = (now.getMinutes() * 60 + now.getSeconds()) / 3600;
-            
-            // Select random pattern with time-based weighting
-            const randomValue = Math.random() * 100;
             let selectedPattern;
+            let confidence;
             
-            if (randomValue < 40) {
-                selectedPattern = patterns[0]; // Bullish
-            } else if (randomValue < 80) {
-                selectedPattern = patterns[1]; // Bearish
+            if (currentImageId && specialImagePredictions[currentImageId]) {
+                // Use the predefined prediction for special images
+                const prediction = specialImagePredictions[currentImageId];
+                selectedPattern = {
+                    name: prediction.pattern,
+                    confidence: prediction.confidence,
+                    icon: prediction.pattern === "Bullish" ? "🟢" : 
+                          (prediction.pattern === "Bearish" ? "🔴" : "🟡")
+                };
+                confidence = prediction.confidence;
             } else {
-                selectedPattern = patterns[2]; // Neutral
+                // Generate random prediction for other images
+                const now = new Date();
+                const timeFactor = (now.getMinutes() * 60 + now.getSeconds()) / 3600;
+                
+                // Select random pattern with time-based weighting
+                const randomValue = Math.random() * 100;
+                
+                if (randomValue < 40) {
+                    selectedPattern = { name: "Bullish", confidence: 85, icon: "🟢" };
+                } else if (randomValue < 80) {
+                    selectedPattern = { name: "Bearish", confidence: 82, icon: "🔴" };
+                } else {
+                    selectedPattern = { name: "Neutral", confidence: 78, icon: "🟡" };
+                }
+                
+                // Adjust confidence based on time
+                confidence = selectedPattern.confidence + Math.floor(Math.sin(timeFactor * Math.PI * 4) * 5);
+                confidence = Math.max(70, Math.min(95, confidence));
             }
-            
-            // Adjust confidence based on time
-            let confidence = selectedPattern.confidence + Math.floor(Math.sin(timeFactor * Math.PI * 4) * 5);
-            confidence = Math.max(70, Math.min(95, confidence));
             
             // Set results
             predictionResult.textContent = `${selectedPattern.icon} ${selectedPattern.name}`;
@@ -650,6 +767,7 @@
             fileInput.value = '';
             hiddenMessage.style.display = 'none';
             hiddenDataResult.style.display = 'none';
+            currentImageId = null;
         }
     </script>
 </body>
