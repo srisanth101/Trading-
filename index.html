@@ -4,119 +4,205 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Face → Blood Group (Demo)</title>
+  <title>Face Scanner — Show Your Saved Blood Group</title>
   <style>
-    :root{--accent:#6b46c1}
+    :root{--accent:#0f62fe;--bg:#f6f8fb}
     *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;background:#f7f7fb;color:#111}
-    .wrap{max-width:820px;margin:18px auto;padding:16px}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;background:var(--bg);color:#0b1220}
+    .wrap{max-width:820px;margin:14px auto;padding:16px}
     header{display:flex;gap:12px;align-items:center}
     h1{font-size:1.15rem;margin:0}
-    p.lead{margin:6px 0 18px;color:#444;font-size:0.95rem}
-    .card{background:white;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(20,20,40,0.06)}
-    .video-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000}
+    p.lead{margin:6px 0 12px;color:#354052;font-size:0.95rem}
+    .card{background:white;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
+    .video-wrap{position:relative;border-radius:12px;overflow:hidden;background:#000}
     video,canvas{width:100%;height:auto;display:block}
-    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    button{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:600}
-    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(107,70,193,0.12)}
-    .result{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbff);text-align:center}
-    .badge{display:inline-block;padding:8px 12px;border-radius:999px;font-weight:700;margin-top:6px}
-    .disclaimer{font-size:0.85rem;color:#7a6f9a;margin-top:12px}
-    footer{margin-top:16px;text-align:center;color:#666;font-size:0.85rem}
+    .overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:14px;pointer-events:none}
+    .scan-frame{width:86%;max-width:420px;height:120px;border:3px dashed rgba(255,255,255,0.18);backdrop-filter: blur(2px);border-radius:10px}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    button{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:700}
+    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(15,98,254,0.12)}
+    .result{margin-top:12px;padding:14px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);text-align:center}
+    .badge{display:inline-block;padding:10px 14px;border-radius:999px;font-weight:800;margin-top:6px;font-size:1.05rem}
+    .muted{color:#556070;font-size:0.9rem}
+    .form-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    select,input[type=text]{padding:10px;border-radius:10px;border:1px solid #e6eefb;min-width:140px}
+    label.switch{display:inline-flex;align-items:center;gap:8px}
+    .small{font-size:0.85rem}
+    footer{margin-top:18px;text-align:center;color:#556070;font-size:0.85rem}
     @media (min-width:720px){h1{font-size:1.3rem}}
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="#6b46c1"/><path d="M12 7a3 3 0 100 6 3 3 0 000-6z" fill="#fff"/><path d="M4 20c1.5-3.2 5.1-5 8-5s6.5 1.8 8 5H4z" fill="#fff" opacity="0.9"/></svg>
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="var(--accent)"/><path d="M12 7a3 3 0 100 6 3 3 0 000-6z" fill="#fff"/><path d="M4 20c1.5-3.2 5.1-5 8-5s6.5 1.8 8 5H4z" fill="#fff" opacity="0.9"/></svg>
       <div>
-        <h1>Face → Blood Group (Demo)</h1>
-        <p class="lead">Mobile-friendly demo that captures a face image and returns a simulated blood-group result. <strong>This is only a demonstration — it cannot determine your real blood group.</strong></p>
+        <h1>Face Scanner — Show Your Saved Blood Group</h1>
+        <p class="lead">This page uses your camera for a realistic scanning animation. You choose and save which blood group(s) should be shown — the site will reveal the saved result when you "scan". <strong>This does not detect blood groups from your face.</strong></p>
       </div>
     </header><section class="card" aria-labelledby="camTitle">
-  <h2 id="camTitle" style="font-size:1rem;margin:0 0 8px">Camera / Upload</h2>
+  <h2 id="camTitle" style="font-size:1rem;margin:0 0 10px">Camera Scanner</h2>
 
   <div class="video-wrap" style="aspect-ratio:4/3;">
-    <video id="video" autoplay playsinline></video>
+    <video id="video" autoplay playsinline muted></video>
     <canvas id="canvas" style="display:none"></canvas>
+    <div class="overlay"><div class="scan-frame" id="scanFrame"></div></div>
   </div>
 
   <div class="controls">
-    <button id="startBtn">Start Camera</button>
+    <button id="openCam">Open Camera</button>
+    <button id="scanBtn" class="ghost" disabled>Start Scan</button>
     <button id="snapBtn" class="ghost">Capture Photo</button>
-    <label for="file" class="ghost" style="display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);cursor:pointer">Upload</label>
-    <input type="file" id="file" accept="image/*" capture="user" style="display:none">
-    <button id="analyzeBtn" style="margin-left:auto" disabled>Analyze (Demo)</button>
+    <button id="stopCam" class="ghost">Stop Camera</button>
+    <div style="margin-left:auto" class="small muted">Status: <span id="status">Idle</span></div>
+  </div>
+
+  <div style="margin-top:12px" class="form-row">
+    <label class="small muted">Saved groups (you can store multiple):</label>
+    <select id="groupSelect" multiple size="1" style="height:44px"></select>
+    <input type="text" id="customGroup" placeholder="Add custom (e.g. A+)" />
+    <button id="addGroup">Add</button>
+    <button id="clearGroups" class="ghost">Clear</button>
+  </div>
+
+  <div style="margin-top:12px" class="form-row">
+    <label class="small muted">Default to show on scan:</label>
+    <select id="defaultSelect"></select>
+    <label class="switch small" style="margin-left:auto"><input type="checkbox" id="autoScan" /> <span>Auto-start scan on camera open</span></label>
   </div>
 
   <div id="preview" style="margin-top:12px"></div>
 
   <div id="result" class="result" style="display:none">
     <div id="groupBadge" class="badge">A+</div>
-    <div id="confidence" style="margin-top:8px;font-weight:600">Confidence: 72%</div>
-    <div class="disclaimer">This is a purely simulated result for demonstration and UI testing. <strong>To know your actual blood group, consult a certified lab or your medical records.</strong></div>
+    <div id="confidence" style="margin-top:8px;font-weight:600" class="muted">Revealed by saved data</div>
+    <div style="margin-top:8px" class="small muted">Tip: You can save multiple groups and pick which one is the default to reveal.</div>
   </div>
 
-  <div class="disclaimer" style="margin-top:12px">
-    <strong>Important:</strong> There is <em>no reliable scientific method</em> to determine a person's blood group from a face image. This page only shows a deterministic, repeatable simulation based on the image pixels so you can test UI and workflows.
-  </div>
-</section>
-
-<section style="margin-top:14px">
-  <div class="card">
-    <h3 style="margin-top:0">How it works (technical)</h3>
-    <ol style="padding-left:18px;margin:8px 0">
-      <li>We capture an image from the camera or let you upload one.</li>
-      <li>Client-side code computes a tiny hash from the image pixels and maps it deterministically to one of 8 blood groups (A+/A-/B+/B-/AB+/AB-/O+/O-).</li>
-      <li>The result and a simulated confidence score are shown. <strong>This is not medical advice.</strong></li>
-    </ol>
-    <p style="margin:8px 0 0;font-size:0.9rem;color:#444">Use this file for UI testing, mockups, or education. Remove the demo mapping before repurposing.</p>
+  <div style="margin-top:12px" class="muted small">
+    <strong>Reminder:</strong> This app <em>does not</em> detect blood groups. It simply displays the blood group(s) you saved locally. For real blood group testing, contact a certified lab.
   </div>
 </section>
 
 <footer>
-  Built for demo • Always use proper lab testing for real medical results
+  Built for demo • Data stored locally in your browser
 </footer>
 
   </div><script>
-const startBtn = document.getElementById('startBtn')
+// Elements
+const openCam = document.getElementById('openCam')
+const stopCam = document.getElementById('stopCam')
+const scanBtn = document.getElementById('scanBtn')
 const snapBtn = document.getElementById('snapBtn')
-const analyzeBtn = document.getElementById('analyzeBtn')
 const video = document.getElementById('video')
 const canvas = document.getElementById('canvas')
 const preview = document.getElementById('preview')
+const statusEl = document.getElementById('status')
+const groupSelect = document.getElementById('groupSelect')
+const addGroupBtn = document.getElementById('addGroup')
+const defaultSelect = document.getElementById('defaultSelect')
+const clearGroups = document.getElementById('clearGroups')
+const customGroup = document.getElementById('customGroup')
 const result = document.getElementById('result')
 const groupBadge = document.getElementById('groupBadge')
 const confidenceEl = document.getElementById('confidence')
-const fileInput = document.getElementById('file')
-let stream
+const autoScan = document.getElementById('autoScan')
 
-const BLOOD_GROUPS = ['A+','A-','B+','B-','AB+','AB-','O+','O-']
+let stream = null
+const STORAGE_KEY = 'face_scanner_groups_v1'
 
-async function startCamera(){
+const DEFAULT_OPTIONS = ['A+','A-','B+','B-','AB+','AB-','O+','O-']
+
+function setStatus(s){ statusEl.textContent = s }
+
+// load saved groups from localStorage
+function loadGroups(){
+  const raw = localStorage.getItem(STORAGE_KEY)
+  let data = {groups: DEFAULT_OPTIONS.slice(0,4), default: DEFAULT_OPTIONS[0], autoscan:false}
+  try{ if(raw) data = JSON.parse(raw) }catch(e){ /* ignore */ }
+  return data
+}
+
+function saveGroups(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) }
+
+function refreshGroupUI(){
+  const data = loadGroups()
+  // groups select (multiple)
+  groupSelect.innerHTML = ''
+  data.groups.forEach(g=>{
+    const o = document.createElement('option')
+    o.value = g; o.textContent = g
+    groupSelect.appendChild(o)
+  })
+  // default select
+  defaultSelect.innerHTML = ''
+  const noneOpt = document.createElement('option'); noneOpt.value=''; noneOpt.textContent='(none)'
+  defaultSelect.appendChild(noneOpt)
+  data.groups.forEach(g=>{
+    const o = document.createElement('option'); o.value=g; o.textContent=g
+    if(g===data.default) o.selected=true
+    defaultSelect.appendChild(o)
+  })
+  // autoscan
+  autoScan.checked = !!data.autoscan
+  scanBtn.disabled = !data.groups.length
+}
+
+// Initialize UI on page load
+refreshGroupUI()
+
+addGroupBtn.addEventListener('click', ()=>{
+  const v = (customGroup.value||'').trim()
+  if(!v){ alert('Enter a blood group like A+ or O-'); return }
+  const data = loadGroups()
+  if(!data.groups.includes(v)) data.groups.push(v)
+  data.default = data.default || v
+  saveGroups(data)
+  customGroup.value=''
+  refreshGroupUI()
+})
+
+clearGroups.addEventListener('click', ()=>{
+  if(!confirm('Clear all saved groups?')) return
+  const data = {groups:[], default:'', autoscan:false}
+  saveGroups(data)
+  refreshGroupUI()
+})
+
+defaultSelect.addEventListener('change', ()=>{
+  const data = loadGroups(); data.default = defaultSelect.value; saveGroups(data); refreshGroupUI()
+})
+
+autoScan.addEventListener('change', ()=>{ const data = loadGroups(); data.autoscan = autoScan.checked; saveGroups(data) })
+
+// Camera functions
+async function openCamera(){
   try{
+    setStatus('Requesting camera permission...')
     stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false})
     video.srcObject = stream
-    startBtn.textContent = 'Camera On'
-    startBtn.disabled = true
-    analyzeBtn.disabled = false
+    setStatus('Camera active')
+    scanBtn.disabled = false
+    // if autoscan enabled, start scan
+    const data = loadGroups()
+    if(data.autoscan) startScan()
   }catch(e){
-    alert('Camera not available or permission denied. You can upload an image instead.')
+    console.error(e)
+    setStatus('Camera unavailable or permission denied')
+    alert('Cannot open camera. Please allow camera permission or use Capture Photo.')
   }
 }
 
 function stopCamera(){
-  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
-  startBtn.textContent = 'Start Camera'
-  startBtn.disabled = false
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null }
+  video.srcObject = null
+  setStatus('Camera stopped')
 }
 
 function capturePhoto(){
   const w = video.videoWidth || 640
   const h = video.videoHeight || 480
-  canvas.width = w
-  canvas.height = h
+  canvas.width = w; canvas.height = h
   const ctx = canvas.getContext('2d')
   ctx.drawImage(video,0,0,w,h)
   const dataUrl = canvas.toDataURL('image/png')
@@ -134,79 +220,65 @@ function showPreview(dataUrl){
   result.style.display = 'none'
 }
 
-fileInput.addEventListener('change', (e)=>{
-  const f = e.target.files && e.target.files[0]
-  if(!f) return
-  const reader = new FileReader()
-  reader.onload = ()=>{
-    showPreview(reader.result)
-    analyzeBtn.disabled = false
-  }
-  reader.readAsDataURL(f)
-})
+// Scan animation and reveal saved result
+function startScan(){
+  if(!video.srcObject){ alert('Open the camera first'); return }
+  setStatus('Scanning...')
+  scanBtn.disabled = true
+  // small animation: flash and countdown
+  const frame = document.getElementById('scanFrame')
+  frame.style.borderStyle='solid'
+  let count = 3
+  const iv = setInterval(()=>{
+    frame.style.opacity = (count%2)?'1':'0.45'
+    setStatus('Scanning — ' + count)
+    count--
+    if(count<0){ clearInterval(iv); frame.style.opacity='1'; frame.style.borderStyle='dashed'; revealSaved() }
+  },700)
+}
 
-snapBtn.addEventListener('click', ()=>{
-  if(video.srcObject) capturePhoto()
-  else alert('Camera not started — click Start Camera or Upload an image')
-})
+function revealSaved(){
+  const data = loadGroups()
+  const toShow = data.default || (data.groups && data.groups[0]) || ''
+  if(!toShow){ alert('No saved blood group found. Add one first.'); setStatus('Idle'); scanBtn.disabled=false; return }
+  // show result
+  groupBadge.textContent = toShow
+  confidenceEl.textContent = 'Revealed from saved profile'
+  result.style.display = 'block'
+  setStatus('Done')
+  scanBtn.disabled = false
+}
 
-startBtn.addEventListener('click', startCamera)
+// Event listeners
+openCam.addEventListener('click', openCamera)
+stopCam.addEventListener('click', stopCamera)
+snapBtn.addEventListener('click', ()=>{ if(video.srcObject) capturePhoto(); else alert('Open camera first or use upload (not available in demo).') })
+scanBtn.addEventListener('click', startScan)
 
-analyzeBtn.addEventListener('click', ()=>{
-  // Confirm user understands this is a demo
-  if(!confirm('This is a demo and cannot determine your real blood group. Proceed?')) return
-  const dataUrl = preview.getAttribute('data-img')
-  if(!dataUrl){
-    // if no preview, and camera running, capture one
-    if(video.srcObject) capturePhoto()
-    else{ alert('Please capture or upload an image first.'); return }
-  }
-  // compute deterministic mapping
-  simulateAnalysis()
-})
-
-function simulateAnalysis(){
-  // Draw the preview image into canvas at small size for hashing
-  const img = new Image()
-  img.onload = ()=>{
-    const w = 64, h = 64
-    canvas.width = w; canvas.height = h
-    const ctx = canvas.getContext('2d')
-    ctx.drawImage(img,0,0,w,h)
-    const data = ctx.getImageData(0,0,w,h).data
-    // simple hash: sum of pixels
-    let sum = 0
-    for(let i=0;i<data.length;i+=4){
-      // combine RGB to one int
-      sum += data[i] + data[i+1]*3 + data[i+2]*7
+// Auto-open camera on page load if permission previously granted
+(async ()=>{
+  try{
+    // check if permission already granted
+    const perm = await navigator.permissions.query({name:'camera'})
+    if(perm.state==='granted'){
+      // open silently
+      openCamera()
     }
-    // deterministic group index
-    const idx = Math.abs(sum) % BLOOD_GROUPS.length
-    const group = BLOOD_GROUPS[idx]
-    // pseudo-random but deterministic confidence from hash
-    const conf = 50 + (Math.abs((sum>>3) % 50)) // 50..99
+    // if denied, do nothing — user must click
+  }catch(e){ /* permissions api may not be supported */ }
+})();
 
-    // show
-    groupBadge.textContent = group
-    confidenceEl.textContent = `Confidence: ${conf}% (simulated)`
-    groupBadge.style.background = '#f1f0ff'
-    groupBadge.style.color = 'var(--accent)'
-    groupBadge.style.border = '1px solid rgba(107,70,193,0.12)'
-    result.style.display = 'block'
+// Save initial default groups if localStorage empty
+(function ensureDefaults(){
+  const raw = localStorage.getItem(STORAGE_KEY)
+  if(!raw){
+    const data = {groups: DEFAULT_OPTIONS.slice(0,8), default: DEFAULT_OPTIONS[0], autoscan:false}
+    saveGroups(data)
+    refreshGroupUI()
   }
-  img.crossOrigin = 'anonymous'
-  img.src = preview.getAttribute('data-img') || videoToDataURL()
-}
+})()
 
-function videoToDataURL(){
-  const w = video.videoWidth||640, h=video.videoHeight||480
-  canvas.width=w;canvas.height=h
-  const ctx = canvas.getContext('2d')
-  ctx.drawImage(video,0,0,w,h)
-  return canvas.toDataURL('image/png')
-}
-
-// clean up when page hidden
+// Clean up when leaving
 window.addEventListener('pagehide', stopCamera)
 window.addEventListener('beforeunload', stopCamera)
 </script></body>
