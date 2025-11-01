@@ -1,774 +1,213 @@
-<!DOCTYPE html>
+<!doctype html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpideyTrade AI Predictor</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
-        
-        :root {
-            --primary-color: #3498db;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --dark-color: #2c3e50;
-            --light-color: #ecf0f1;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
-            background-size: cover;
-            color: white;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            backdrop-filter: blur(8px);
-            background-color: rgba(0, 0, 0, 0.5);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .logo {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px;
-            border-radius: 50%;
-            overflow: hidden;
-        }
-        
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #3498db, #2ecc71);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .section {
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        h2 {
-            font-size: 1.3rem;
-            margin-bottom: 15px;
-            color: var(--light-color);
-            padding-bottom: 8px;
-            border-bottom: 2px solid var(--primary-color);
-        }
-        
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 150px;
-        }
-        
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-        
-        .btn-success {
-            background-color: var(--success-color);
-            color: white;
-        }
-        
-        .preview-container {
-            text-align: center;
-            margin: 20px 0;
-            position: relative;
-        }
-        
-        #mainPreview {
-            max-width: 100%;
-            max-height: 350px;
-            border-radius: 10px;
-            display: none;
-        }
-        
-        .remove-image {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(231, 76, 60, 0.8);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: none;
-        }
-        
-        .camera-section {
-            display: none;
-            text-align: center;
-        }
-        
-        #cameraView {
-            width: 100%;
-            max-height: 350px;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        
-        .camera-controls {
-            margin: 15px 0;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        canvas {
-            display: none;
-        }
-        
-        .analysis-section {
-            display: none;
-            text-align: center;
-        }
-        
-        .progress-container {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-        
-        .progress-bar {
-            height: 15px;
-            background-color: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-        
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--success-color));
-            width: 0%;
-            transition: width 0.5s ease-out;
-        }
-        
-        .countdown-text {
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .result-section {
-            display: none;
-            text-align: center;
-        }
-        
-        .result-display {
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 15px;
-            background-color: rgba(0, 0, 0, 0.3);
-        }
-        
-        #analyzedImage {
-            max-width: 100%;
-            max-height: 250px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            display: none;
-        }
-        
-        .prediction-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 15px 0;
-            text-transform: uppercase;
-        }
-        
-        .win {
-            color: var(--success-color);
-        }
-        
-        .loss {
-            color: var(--danger-color);
-        }
-        
-        .confidence-text {
-            font-size: 1rem;
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        input[type="file"] {
-            display: none;
-        }
-        
-        .login-section {
-            text-align: center;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-        
-        .login-input {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border-radius: 50px;
-            border: none;
-            background-color: rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 1rem;
-        }
-        
-        .login-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-        }
-        
-        .logout-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 15px;
-            background-color: var(--danger-color);
-            border: none;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        
-        .special-images {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        .special-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.3s;
-            object-fit: cover;
-        }
-        
-        .special-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(52, 152, 219, 0.6);
-        }
-        
-        .hidden-data {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: rgba(0, 0, 0, 0.4);
-            border-radius: 10px;
-            border-left: 4px solid var(--warning-color);
-        }
-        
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-                margin: 10px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .logout-btn {
-                position: static;
-                margin-top: 15px;
-                width: 100%;
-            }
-            
-            .special-images {
-                gap: 5px;
-            }
-            
-            .special-image {
-                width: 80px;
-                height: 80px;
-            }
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Face → Blood Group (Demo)</title>
+  <style>
+    :root{--accent:#6b46c1}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;background:#f7f7fb;color:#111}
+    .wrap{max-width:820px;margin:18px auto;padding:16px}
+    header{display:flex;gap:12px;align-items:center}
+    h1{font-size:1.15rem;margin:0}
+    p.lead{margin:6px 0 18px;color:#444;font-size:0.95rem}
+    .card{background:white;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(20,20,40,0.06)}
+    .video-wrap{position:relative;border-radius:10px;overflow:hidden;background:#000}
+    video,canvas{width:100%;height:auto;display:block}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    button{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:600}
+    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(107,70,193,0.12)}
+    .result{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#fff,#fbfbff);text-align:center}
+    .badge{display:inline-block;padding:8px 12px;border-radius:999px;font-weight:700;margin-top:6px}
+    .disclaimer{font-size:0.85rem;color:#7a6f9a;margin-top:12px}
+    footer{margin-top:16px;text-align:center;color:#666;font-size:0.85rem}
+    @media (min-width:720px){h1{font-size:1.3rem}}
+  </style>
 </head>
 <body>
-    <div class="container" id="loginContainer">
-        <div class="header">
-            <div class="logo">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
-            </div>
-            <h1>SpideyTrade AI Predictor</h1>
-            <p>Enter your access key to continue</p>
-        </div>
-        
-        <div class="section login-section">
-            <input type="password" class="login-input" id="accessKeyInput" placeholder="Enter Access Key">
-            <button class="btn btn-primary login-btn" id="loginBtn">Login</button>
-        </div>
-    </div>
+  <div class="wrap">
+    <header>
+      <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="#6b46c1"/><path d="M12 7a3 3 0 100 6 3 3 0 000-6z" fill="#fff"/><path d="M4 20c1.5-3.2 5.1-5 8-5s6.5 1.8 8 5H4z" fill="#fff" opacity="0.9"/></svg>
+      <div>
+        <h1>Face → Blood Group (Demo)</h1>
+        <p class="lead">Mobile-friendly demo that captures a face image and returns a simulated blood-group result. <strong>This is only a demonstration — it cannot determine your real blood group.</strong></p>
+      </div>
+    </header><section class="card" aria-labelledby="camTitle">
+  <h2 id="camTitle" style="font-size:1rem;margin:0 0 8px">Camera / Upload</h2>
 
-    <div class="container" id="appContainer" style="display: none;">
-        <button class="logout-btn" id="logoutBtn">Logout</button>
-        <div class="header">
-            <div class="logo">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj2n4dhrtBiqEn3haeHxDTvjY40LS00JdmP-kdUzV-6ERoE0wMi4icRoXDwKv86FyIXlEdHvFnh6UN_Fj59wj78tby-E_v3aFJK6eBiC89p-xmC_j7sUEFRRbKs3VG9Gyh4JbMUyDRgKorxYYg57oNAaijiEVDwYzHkV206uXPg7pVP911sggOyf0v-Cmc/s3128/IMG_20250730_205312.jpg" alt="AI Logo">
-            </div>
-            <h1>SpideyTrade AI Predictor</h1>
-            <p>Upload or select a trading chart for analysis</p>
-        </div>
-        
-        <div class="section" id="tradingSection">
-            <h2>Select Chart</h2>
-            <div class="action-buttons">
-                <button class="btn btn-primary" id="uploadBtn">Upload Image</button>
-                <button class="btn btn-primary" id="cameraBtn">Use Camera</button>
-            </div>
-            
-            <h3 style="text-align: center; margin: 20px 0 10px; color: var(--light-color);">Or select from these special charts:</h3>
-            <div class="special-images">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhfQXWYhOtRFAFq3XaOy3jRNcOAPcShSl2Bu8DZApei3jKYegSggk1KjU2Uetn5LMpscU2jZDzF9pkFBlPg9XlQqCOuPG6NaGKgU2VFTyTPFuUJ9NZj0BZIRxsKE-xanEs34yfk3MRP95Yytlo9IX3sS4lBo_p2vQK-pu-64Bgow8UnBQ0WU_nEZFegUeg/s1140/Screenshot_2025-07-28-21-03-53-16_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="1">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg6Dy1RjPFcfQxN3_CfyVoeQ11fTDB3ubLLpv5gegFQEdXKNfBScFf9BMeyPRxBnisyq1FDxGJaMQnfprw-dU0zIxOuP1wyFeJwiuC99tC7q8Cc6CuXOSGQBCo1vT9hhKUzIRwkPUNzi7yAI-F4JfFQhBprrtiq8Q5XY6RcY5HykINBC7D6hLWdGmcZyCo/s1291/Screenshot_2025-07-28-21-02-50-64_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="2">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh5iu95id7Mc_I9MYU16oNSb01GLlSDbLHnPnoravdsH5xkQrGgCvVA2CydKgU83rSVS2T07LLM9YTMIjjIZ_htkqRyOtgxfZBrJp0J2QedegoLYAf_Q5U3J2DpcEPywY1diMpXxrSCpMR0JmUOt2d1PC09rPd6c7Nj_PHtM5UzqlGmuOre-NEHEeQU540/s1276/Screenshot_2025-07-28-21-02-07-20_680d03679600f7af0b4c700c6b270fe7.jpg" class="special-image" data-id="3">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgqCPT51OROtXjQ8ipiJILoywnYo3sqbsGqFSX7elezid9CHcxmyH7juSA0NxelLnNWeIR86GEFyzq0dP1nmvrkFmzjjCfNSs9FIuborhu58QWIpVSGWWF8Sd44U2xer_GciF_7rr1L8EMzbpxY50zwRcfsBc91czy1HpyTr_VMfsqQpueWm6lNyyrRHyk/s1280/IMG-20250728-WA0101.jpg" class="special-image" data-id="4">
-                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmT7eKKkYb4MGV2Sb6qhgV_JyAvv0kWKn_nwT_KT4o1HU8V-advS0exQqdcsw9BMeruaRE67MLDj9-8gMuI4HJqegyckQRYmakTxfy-AlvRGjn3aEk8aEoW2BY3jeWbblG5hf0gKsJouOw4e08EtmHonxmcoVjqKbHOgq_WZsLeynCrlQfvdxQrU7cDVQ/s1280/IMG-20250728-WA0102.jpg" class="special-image" data-id="5">
-            </div>
-            
-            <input type="file" id="fileInput" accept="image/*" class="hidden">
-            
-            <div class="preview-container">
-                <img id="mainPreview" alt="Chart preview">
-                <button class="remove-image" id="removeImageBtn">×</button>
-            </div>
-        </div>
-        
-        <div class="section camera-section" id="cameraSection">
-            <h2>Camera Capture</h2>
-            <video id="cameraView" autoplay playsinline></video>
-            <div class="camera-controls">
-                <button class="btn btn-success" id="captureBtn">Capture</button>
-                <button class="btn btn-primary" id="cancelCameraBtn">Back</button>
-            </div>
-            <canvas id="canvas" class="hidden"></canvas>
-        </div>
-        
-        <div class="section analysis-section" id="analysisSection">
-            <h2>Analysis in Progress</h2>
-            <div class="progress-container">
-                <div class="progress-bar">
-                    <div class="progress" id="progressBar"></div>
-                </div>
-                <div class="countdown-text">Processing chart data... <span id="countdown">5</span>s</div>
-            </div>
-            <div id="hiddenDataResult" class="hidden-data" style="display: none;"></div>
-        </div>
-        
-        <div class="section result-section" id="resultSection">
-            <h2>Prediction Result</h2>
-            <div class="result-display">
-                <img id="analyzedImage" src="" alt="Analyzed chart">
-                <div class="prediction-text" id="predictionResult"></div>
-                <div class="confidence-text">Confidence: <span id="confidenceLevel">85%</span></div>
-                <div id="hiddenMessage" class="hidden-data" style="display: none;"></div>
-            </div>
-            <button class="btn btn-primary" id="newPredictionBtn">New Analysis</button>
-        </div>
-    </div>
+  <div class="video-wrap" style="aspect-ratio:4/3;">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none"></canvas>
+  </div>
 
-    <script>
-        // DOM elements
-        const loginContainer = document.getElementById('loginContainer');
-        const appContainer = document.getElementById('appContainer');
-        const accessKeyInput = document.getElementById('accessKeyInput');
-        const loginBtn = document.getElementById('loginBtn');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const cameraBtn = document.getElementById('cameraBtn');
-        const fileInput = document.getElementById('fileInput');
-        const mainPreview = document.getElementById('mainPreview');
-        const removeImageBtn = document.getElementById('removeImageBtn');
-        const cameraSection = document.getElementById('cameraSection');
-        const cameraView = document.getElementById('cameraView');
-        const captureBtn = document.getElementById('captureBtn');
-        const cancelCameraBtn = document.getElementById('cancelCameraBtn');
-        const canvas = document.getElementById('canvas');
-        const analysisSection = document.getElementById('analysisSection');
-        const resultSection = document.getElementById('resultSection');
-        const progressBar = document.getElementById('progressBar');
-        const countdown = document.getElementById('countdown');
-        const analyzedImage = document.getElementById('analyzedImage');
-        const predictionResult = document.getElementById('predictionResult');
-        const confidenceLevel = document.getElementById('confidenceLevel');
-        const newPredictionBtn = document.getElementById('newPredictionBtn');
-        const hiddenMessage = document.getElementById('hiddenMessage');
-        const hiddenDataResult = document.getElementById('hiddenDataResult');
-        const specialImages = document.querySelectorAll('.special-image');
-        
-        // Special image predictions (based on the provided images)
-        const specialImagePredictions = {
-            "1": { // First image
-                pattern: "Bullish",
-                confidence: 92,
-                hiddenMessage: "Strong buy signal detected at 1.2350 level. Target: 1.2450 with stop loss at 1.2300."
-            },
-            "2": { // Second image
-                pattern: "Bearish",
-                confidence: 89,
-                hiddenMessage: "Market showing reversal signs. Prepare for sell entry at 1.2400 with target 1.2300."
-            },
-            "3": { // Third image
-                pattern: "Bullish",
-                confidence: 95,
-                hiddenMessage: "Perfect bullish setup. Enter long at current price with target 1.2500. High probability trade."
-            },
-            "4": { // Fourth image
-                pattern: "Bearish",
-                confidence: 87,
-                hiddenMessage: "Downtrend continuation expected. Sell rallies with target 1.2250. Stop above 1.2400."
-            },
-            "5": { // Fifth image
-                pattern: "Neutral",
-                confidence: 78,
-                hiddenMessage: "Market in consolidation. Wait for breakout above 1.2450 or below 1.2350 for direction."
-            }
-        };
-        
-        // Camera variables
-        let stream = null;
-        let analysisInProgress = false;
-        let isLoggedIn = false;
-        const ACCESS_KEY = "SPIDEYTRADE";
-        let currentImageId = null;
-        
-        // Event listeners
-        loginBtn.addEventListener('click', handleLogin);
-        logoutBtn.addEventListener('click', handleLogout);
-        uploadBtn.addEventListener('click', () => fileInput.click());
-        cameraBtn.addEventListener('click', startCamera);
-        fileInput.addEventListener('change', handleFileUpload);
-        captureBtn.addEventListener('click', captureImage);
-        cancelCameraBtn.addEventListener('click', stopCamera);
-        newPredictionBtn.addEventListener('click', resetAnalysis);
-        removeImageBtn.addEventListener('click', removeImage);
-        
-        // Add click listeners to special images
-        specialImages.forEach(img => {
-            img.addEventListener('click', function() {
-                if (!isLoggedIn) return;
-                currentImageId = this.getAttribute('data-id');
-                mainPreview.src = this.src;
-                mainPreview.style.display = 'block';
-                removeImageBtn.style.display = 'block';
-                startAnalysis(this.src);
-            });
-        });
-        
-        // Check if already logged in from sessionStorage
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedLogin = sessionStorage.getItem('chartPredictorLoggedIn');
-            if (savedLogin === 'true') {
-                loginContainer.style.display = 'none';
-                appContainer.style.display = 'block';
-                isLoggedIn = true;
-            }
-        });
-        
-        function handleLogin() {
-            const enteredKey = accessKeyInput.value.trim();
-            if (enteredKey === ACCESS_KEY) {
-                loginContainer.style.display = 'none';
-                appContainer.style.display = 'block';
-                isLoggedIn = true;
-                sessionStorage.setItem('chartPredictorLoggedIn', 'true');
-                accessKeyInput.value = '';
-            } else {
-                alert('Invalid access key. Please try again.');
-                accessKeyInput.value = '';
-                accessKeyInput.focus();
-            }
-        }
-        
-        function handleLogout() {
-            isLoggedIn = false;
-            sessionStorage.removeItem('chartPredictorLoggedIn');
-            appContainer.style.display = 'none';
-            loginContainer.style.display = 'block';
-            resetAnalysis();
-        }
-        
-        function startCamera() {
-            if (analysisInProgress || !isLoggedIn) return;
-            
-            document.getElementById('tradingSection').style.display = 'none';
-            cameraSection.style.display = 'block';
-            currentImageId = null;
-            
-            const constraints = {
-                video: {
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
-                    facingMode: 'environment'
-                }
-            };
-            
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(function(s) {
-                    stream = s;
-                    cameraView.srcObject = stream;
-                })
-                .catch(function(err) {
-                    console.error("Camera error: ", err);
-                    stopCamera();
-                });
-        }
-        
-        function stopCamera() {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                cameraView.srcObject = null;
-                stream = null;
-            }
-            cameraSection.style.display = 'none';
-            document.getElementById('tradingSection').style.display = 'block';
-        }
-        
-        function captureImage() {
-            if (!stream || !isLoggedIn) return;
-            
-            canvas.width = cameraView.videoWidth;
-            canvas.height = cameraView.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(cameraView, 0, 0, canvas.width, canvas.height);
-            
-            const imageData = canvas.toDataURL('image/jpeg');
-            mainPreview.src = imageData;
-            mainPreview.style.display = 'block';
-            removeImageBtn.style.display = 'block';
-            currentImageId = null;
-            
-            stopCamera();
-            startAnalysis(imageData);
-        }
-        
-        function handleFileUpload(event) {
-            if (analysisInProgress || !isLoggedIn) return;
-            
-            const file = event.target.files[0];
-            if (file && file.type.match('image.*')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    mainPreview.src = e.target.result;
-                    mainPreview.style.display = 'block';
-                    removeImageBtn.style.display = 'block';
-                    currentImageId = null;
-                    startAnalysis(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        
-        function removeImage() {
-            mainPreview.src = '';
-            mainPreview.style.display = 'none';
-            removeImageBtn.style.display = 'none';
-            fileInput.value = '';
-            currentImageId = null;
-        }
-        
-        function startAnalysis(imageSrc) {
-            if (!isLoggedIn) return;
-            
-            analysisInProgress = true;
-            analysisSection.style.display = 'block';
-            document.getElementById('tradingSection').style.display = 'none';
-            hiddenDataResult.style.display = 'none';
-            hiddenMessage.style.display = 'none';
-            
-            let progress = 0;
-            let seconds = 5;
-            countdown.textContent = seconds;
-            
-            const progressInterval = setInterval(() => {
-                progress += 20;
-                progressBar.style.width = progress + '%';
-                
-                if (progress >= 100) {
-                    clearInterval(progressInterval);
-                    checkForHiddenData(imageSrc);
-                    showResult(imageSrc);
-                }
-            }, 1000);
-            
-            const countdownInterval = setInterval(() => {
-                seconds--;
-                countdown.textContent = seconds;
-                
-                if (seconds <= 0) {
-                    clearInterval(countdownInterval);
-                }
-            }, 1000);
-        }
-        
-        function checkForHiddenData(imageSrc) {
-            if (currentImageId && specialImagePredictions[currentImageId]) {
-                // This is one of our special images with known predictions
-                const prediction = specialImagePredictions[currentImageId];
-                hiddenDataResult.innerHTML = `
-                    <div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div>
-                    <div style="margin-top: 5px;">${prediction.hiddenMessage}</div>
-                `;
-                hiddenDataResult.style.display = 'block';
-                
-                hiddenMessage.textContent = prediction.hiddenMessage;
-                hiddenMessage.style.display = 'block';
-            } else {
-                // For other images, simulate finding hidden data with 20% chance
-                const hasHiddenData = Math.random() > 0.8;
-                
-                if (hasHiddenData) {
-                    const genericMessages = [
-                        "Potential reversal pattern forming near current price",
-                        "Volume spike detected, indicating strong interest",
-                        "Fibonacci levels suggest key resistance at 1.2450",
-                        "EMA crossover suggests trend change may be coming",
-                        "RSI divergence detected, watch for reversal"
-                    ];
-                    const randomMessage = genericMessages[Math.floor(Math.random() * genericMessages.length)];
-                    
-                    hiddenDataResult.innerHTML = `
-                        <div style="color: #f39c12; font-weight: bold;">🔍 Hidden Data Detected:</div>
-                        <div style="margin-top: 5px;">${randomMessage}</div>
-                    `;
-                    hiddenDataResult.style.display = 'block';
-                    
-                    hiddenMessage.textContent = randomMessage;
-                    hiddenMessage.style.display = 'block';
-                }
-            }
-        }
-        
-        function showResult(imageSrc) {
-            analysisInProgress = false;
-            analysisSection.style.display = 'none';
-            resultSection.style.display = 'block';
-            
-            analyzedImage.src = imageSrc;
-            analyzedImage.style.display = 'block';
-            
-            let selectedPattern;
-            let confidence;
-            
-            if (currentImageId && specialImagePredictions[currentImageId]) {
-                // Use the predefined prediction for special images
-                const prediction = specialImagePredictions[currentImageId];
-                selectedPattern = {
-                    name: prediction.pattern,
-                    confidence: prediction.confidence,
-                    icon: prediction.pattern === "Bullish" ? "🟢" : 
-                          (prediction.pattern === "Bearish" ? "🔴" : "🟡")
-                };
-                confidence = prediction.confidence;
-            } else {
-                // Generate random prediction for other images
-                const now = new Date();
-                const timeFactor = (now.getMinutes() * 60 + now.getSeconds()) / 3600;
-                
-                // Select random pattern with time-based weighting
-                const randomValue = Math.random() * 100;
-                
-                if (randomValue < 40) {
-                    selectedPattern = { name: "Bullish", confidence: 85, icon: "🟢" };
-                } else if (randomValue < 80) {
-                    selectedPattern = { name: "Bearish", confidence: 82, icon: "🔴" };
-                } else {
-                    selectedPattern = { name: "Neutral", confidence: 78, icon: "🟡" };
-                }
-                
-                // Adjust confidence based on time
-                confidence = selectedPattern.confidence + Math.floor(Math.sin(timeFactor * Math.PI * 4) * 5);
-                confidence = Math.max(70, Math.min(95, confidence));
-            }
-            
-            // Set results
-            predictionResult.textContent = `${selectedPattern.icon} ${selectedPattern.name}`;
-            predictionResult.className = selectedPattern.name === "Bullish" ? 
-                "prediction-text win" : 
-                (selectedPattern.name === "Bearish" ? "prediction-text loss" : "prediction-text");
-            
-            confidenceLevel.textContent = confidence + "%";
-        }
-        
-        function resetAnalysis() {
-            if (!isLoggedIn) return;
-            
-            analysisInProgress = false;
-            resultSection.style.display = 'none';
-            analysisSection.style.display = 'none';
-            document.getElementById('tradingSection').style.display = 'block';
-            progressBar.style.width = '0%';
-            removeImage();
-            analyzedImage.style.display = 'none';
-            fileInput.value = '';
-            hiddenMessage.style.display = 'none';
-            hiddenDataResult.style.display = 'none';
-            currentImageId = null;
-        }
-    </script>
-</body>
+  <div class="controls">
+    <button id="startBtn">Start Camera</button>
+    <button id="snapBtn" class="ghost">Capture Photo</button>
+    <label for="file" class="ghost" style="display:inline-block;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.06);cursor:pointer">Upload</label>
+    <input type="file" id="file" accept="image/*" capture="user" style="display:none">
+    <button id="analyzeBtn" style="margin-left:auto" disabled>Analyze (Demo)</button>
+  </div>
+
+  <div id="preview" style="margin-top:12px"></div>
+
+  <div id="result" class="result" style="display:none">
+    <div id="groupBadge" class="badge">A+</div>
+    <div id="confidence" style="margin-top:8px;font-weight:600">Confidence: 72%</div>
+    <div class="disclaimer">This is a purely simulated result for demonstration and UI testing. <strong>To know your actual blood group, consult a certified lab or your medical records.</strong></div>
+  </div>
+
+  <div class="disclaimer" style="margin-top:12px">
+    <strong>Important:</strong> There is <em>no reliable scientific method</em> to determine a person's blood group from a face image. This page only shows a deterministic, repeatable simulation based on the image pixels so you can test UI and workflows.
+  </div>
+</section>
+
+<section style="margin-top:14px">
+  <div class="card">
+    <h3 style="margin-top:0">How it works (technical)</h3>
+    <ol style="padding-left:18px;margin:8px 0">
+      <li>We capture an image from the camera or let you upload one.</li>
+      <li>Client-side code computes a tiny hash from the image pixels and maps it deterministically to one of 8 blood groups (A+/A-/B+/B-/AB+/AB-/O+/O-).</li>
+      <li>The result and a simulated confidence score are shown. <strong>This is not medical advice.</strong></li>
+    </ol>
+    <p style="margin:8px 0 0;font-size:0.9rem;color:#444">Use this file for UI testing, mockups, or education. Remove the demo mapping before repurposing.</p>
+  </div>
+</section>
+
+<footer>
+  Built for demo • Always use proper lab testing for real medical results
+</footer>
+
+  </div><script>
+const startBtn = document.getElementById('startBtn')
+const snapBtn = document.getElementById('snapBtn')
+const analyzeBtn = document.getElementById('analyzeBtn')
+const video = document.getElementById('video')
+const canvas = document.getElementById('canvas')
+const preview = document.getElementById('preview')
+const result = document.getElementById('result')
+const groupBadge = document.getElementById('groupBadge')
+const confidenceEl = document.getElementById('confidence')
+const fileInput = document.getElementById('file')
+let stream
+
+const BLOOD_GROUPS = ['A+','A-','B+','B-','AB+','AB-','O+','O-']
+
+async function startCamera(){
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false})
+    video.srcObject = stream
+    startBtn.textContent = 'Camera On'
+    startBtn.disabled = true
+    analyzeBtn.disabled = false
+  }catch(e){
+    alert('Camera not available or permission denied. You can upload an image instead.')
+  }
+}
+
+function stopCamera(){
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}
+  startBtn.textContent = 'Start Camera'
+  startBtn.disabled = false
+}
+
+function capturePhoto(){
+  const w = video.videoWidth || 640
+  const h = video.videoHeight || 480
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(video,0,0,w,h)
+  const dataUrl = canvas.toDataURL('image/png')
+  showPreview(dataUrl)
+}
+
+function showPreview(dataUrl){
+  preview.innerHTML = ''
+  const img = document.createElement('img')
+  img.src = dataUrl
+  img.style.width = '100%'
+  img.style.borderRadius = '10px'
+  preview.appendChild(img)
+  preview.setAttribute('data-img', dataUrl)
+  result.style.display = 'none'
+}
+
+fileInput.addEventListener('change', (e)=>{
+  const f = e.target.files && e.target.files[0]
+  if(!f) return
+  const reader = new FileReader()
+  reader.onload = ()=>{
+    showPreview(reader.result)
+    analyzeBtn.disabled = false
+  }
+  reader.readAsDataURL(f)
+})
+
+snapBtn.addEventListener('click', ()=>{
+  if(video.srcObject) capturePhoto()
+  else alert('Camera not started — click Start Camera or Upload an image')
+})
+
+startBtn.addEventListener('click', startCamera)
+
+analyzeBtn.addEventListener('click', ()=>{
+  // Confirm user understands this is a demo
+  if(!confirm('This is a demo and cannot determine your real blood group. Proceed?')) return
+  const dataUrl = preview.getAttribute('data-img')
+  if(!dataUrl){
+    // if no preview, and camera running, capture one
+    if(video.srcObject) capturePhoto()
+    else{ alert('Please capture or upload an image first.'); return }
+  }
+  // compute deterministic mapping
+  simulateAnalysis()
+})
+
+function simulateAnalysis(){
+  // Draw the preview image into canvas at small size for hashing
+  const img = new Image()
+  img.onload = ()=>{
+    const w = 64, h = 64
+    canvas.width = w; canvas.height = h
+    const ctx = canvas.getContext('2d')
+    ctx.drawImage(img,0,0,w,h)
+    const data = ctx.getImageData(0,0,w,h).data
+    // simple hash: sum of pixels
+    let sum = 0
+    for(let i=0;i<data.length;i+=4){
+      // combine RGB to one int
+      sum += data[i] + data[i+1]*3 + data[i+2]*7
+    }
+    // deterministic group index
+    const idx = Math.abs(sum) % BLOOD_GROUPS.length
+    const group = BLOOD_GROUPS[idx]
+    // pseudo-random but deterministic confidence from hash
+    const conf = 50 + (Math.abs((sum>>3) % 50)) // 50..99
+
+    // show
+    groupBadge.textContent = group
+    confidenceEl.textContent = `Confidence: ${conf}% (simulated)`
+    groupBadge.style.background = '#f1f0ff'
+    groupBadge.style.color = 'var(--accent)'
+    groupBadge.style.border = '1px solid rgba(107,70,193,0.12)'
+    result.style.display = 'block'
+  }
+  img.crossOrigin = 'anonymous'
+  img.src = preview.getAttribute('data-img') || videoToDataURL()
+}
+
+function videoToDataURL(){
+  const w = video.videoWidth||640, h=video.videoHeight||480
+  canvas.width=w;canvas.height=h
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(video,0,0,w,h)
+  return canvas.toDataURL('image/png')
+}
+
+// clean up when page hidden
+window.addEventListener('pagehide', stopCamera)
+window.addEventListener('beforeunload', stopCamera)
+</script></body>
 </html>
