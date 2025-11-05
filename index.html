@@ -4,282 +4,236 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Face Scanner — Show Your Saved Blood Group</title>
+  <title>Gemini-style Voice Assistant — Mobile</title>
   <style>
-    :root{--accent:#0f62fe;--bg:#f6f8fb}
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;margin:0;background:var(--bg);color:#0b1220}
-    .wrap{max-width:820px;margin:14px auto;padding:16px}
-    header{display:flex;gap:12px;align-items:center}
-    h1{font-size:1.15rem;margin:0}
-    p.lead{margin:6px 0 12px;color:#354052;font-size:0.95rem}
-    .card{background:white;border-radius:14px;padding:14px;box-shadow:0 6px 18px rgba(16,24,40,0.06)}
-    .video-wrap{position:relative;border-radius:12px;overflow:hidden;background:#000}
-    video,canvas{width:100%;height:auto;display:block}
-    .overlay{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding:14px;pointer-events:none}
-    .scan-frame{width:86%;max-width:420px;height:120px;border:3px dashed rgba(255,255,255,0.18);backdrop-filter: blur(2px);border-radius:10px}
-    .controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    button{background:var(--accent);color:white;border:0;padding:10px 14px;border-radius:10px;font-weight:700}
-    button.ghost{background:transparent;color:var(--accent);border:1px solid rgba(15,98,254,0.12)}
-    .result{margin-top:12px;padding:14px;border-radius:12px;background:linear-gradient(180deg,#fff,#fbfdff);text-align:center}
-    .badge{display:inline-block;padding:10px 14px;border-radius:999px;font-weight:800;margin-top:6px;font-size:1.05rem}
-    .muted{color:#556070;font-size:0.9rem}
-    .form-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    select,input[type=text]{padding:10px;border-radius:10px;border:1px solid #e6eefb;min-width:140px}
-    label.switch{display:inline-flex;align-items:center;gap:8px}
-    .small{font-size:0.85rem}
-    footer{margin-top:18px;text-align:center;color:#556070;font-size:0.85rem}
-    @media (min-width:720px){h1{font-size:1.3rem}}
+    :root{--bg1:#ffffff;--bg2:#eef6ff;--accent1:#276ef1;--accent2:#8bd3ff;--card:#ffffff;--muted:#6b7280}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    body{background:linear-gradient(180deg,var(--bg2),var(--bg1));display:flex;align-items:flex-start;justify-content:center;padding:20px}
+    .container{width:100%;max-width:720px;background:transparent}.header{background:linear-gradient(90deg,var(--accent1),var(--accent2));border-radius:16px;padding:18px;color:white;box-shadow:0 6px 20px rgba(39,110,241,0.14);display:flex;gap:12px;align-items:center}
+.logo{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-weight:700}
+.title{font-size:16px;font-weight:600}
+.subtitle{font-size:12px;opacity:0.95}
+
+.card{background:var(--card);border-radius:14px;padding:16px;margin-top:14px;box-shadow:0 6px 20px rgba(15,23,42,0.06)}
+.transcript{min-height:74px;border-radius:10px;padding:12px;background:#fafafa;border:1px solid #f0f0f3;color:#111;font-size:15px}
+.controls{display:flex;gap:8px;margin-top:12px;align-items:center}
+
+.mic-btn{width:70px;height:70px;border-radius:50%;border:none;display:inline-grid;place-items:center;font-size:22px;cursor:pointer;background:linear-gradient(180deg,#fff,#f6f8ff);box-shadow:0 8px 24px rgba(39,110,241,0.18);}
+.mic-btn.listening{background:radial-gradient(circle at 30% 30%, #fff6, #fff);box-shadow:0 12px 30px rgba(39,110,241,0.28);transform:scale(1.03)}
+
+.actions{display:flex;gap:8px;align-items:center}
+.chip{background:#f3f4f6;padding:8px 10px;border-radius:999px;font-size:13px;color:var(--muted)}
+
+.assistant-response{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid #eef5ff}
+.typing{height:18px;display:inline-block;vertical-align:middle}
+.dots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:#9fbfff;animation:dot 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}
+.dots span:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+
+.footer{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+
+.settings{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.select, .range{padding:8px;border-radius:8px;border:1px solid #eee;background:white}
+label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+
+/* responsive */
+@media (max-width:420px){.mic-btn{width:62px;height:62px;font-size:20px}.header{padding:14px}.title{font-size:15px}}
+
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" rx="6" fill="var(--accent)"/><path d="M12 7a3 3 0 100 6 3 3 0 000-6z" fill="#fff"/><path d="M4 20c1.5-3.2 5.1-5 8-5s6.5 1.8 8 5H4z" fill="#fff" opacity="0.9"/></svg>
+  <div class="container">
+    <div class="header">
+      <div class="logo">G</div>
       <div>
-        <h1>Face Scanner — Show Your Saved Blood Group</h1>
-        <p class="lead">This page uses your camera for a realistic scanning animation. You choose and save which blood group(s) should be shown — the site will reveal the saved result when you "scan". <strong>This does not detect blood groups from your face.</strong></p>
+        <div class="title">Gemini-style Voice Assistant</div>
+        <div class="subtitle">Speak naturally — replies with voice. (Local demo)</div>
       </div>
-    </header><section class="card" aria-labelledby="camTitle">
-  <h2 id="camTitle" style="font-size:1rem;margin:0 0 10px">Camera Scanner</h2>
-
-  <div class="video-wrap" style="aspect-ratio:4/3;">
-    <video id="video" autoplay playsinline muted></video>
-    <canvas id="canvas" style="display:none"></canvas>
-    <div class="overlay"><div class="scan-frame" id="scanFrame"></div></div>
-  </div>
+    </div><div class="card">
+  <div class="transcript" id="transcript">Say something — tap the mic 🎙️</div>
 
   <div class="controls">
-    <button id="openCam">Open Camera</button>
-    <button id="scanBtn" class="ghost" disabled>Start Scan</button>
-    <button id="snapBtn" class="ghost">Capture Photo</button>
-    <button id="stopCam" class="ghost">Stop Camera</button>
-    <div style="margin-left:auto" class="small muted">Status: <span id="status">Idle</span></div>
+    <button id="mic" class="mic-btn" aria-label="Start listening">🎤</button>
+    <div class="actions">
+      <div class="chip" id="status">Idle</div>
+      <div style="width:8px"></div>
+      <button id="stopBtn" class="chip">Stop</button>
+    </div>
   </div>
 
-  <div style="margin-top:12px" class="form-row">
-    <label class="small muted">Saved groups (you can store multiple):</label>
-    <select id="groupSelect" multiple size="1" style="height:44px"></select>
-    <input type="text" id="customGroup" placeholder="Add custom (e.g. A+)" />
-    <button id="addGroup">Add</button>
-    <button id="clearGroups" class="ghost">Clear</button>
+  <div class="assistant-response" id="responseArea">
+    <div style="font-weight:600">Assistant</div>
+    <div id="responseText" style="margin-top:8px;color:#111;min-height:32px">Hello — I am your local voice assistant. Try: "What's the time?", "Open YouTube", "Tell me a joke".</div>
   </div>
 
-  <div style="margin-top:12px" class="form-row">
-    <label class="small muted">Default to show on scan:</label>
-    <select id="defaultSelect"></select>
-    <label class="switch small" style="margin-left:auto"><input type="checkbox" id="autoScan" /> <span>Auto-start scan on camera open</span></label>
+  <div class="settings">
+    <div>
+      <label for="voiceSelect">Voice</label>
+      <select id="voiceSelect" class="select"></select>
+    </div>
+    <div>
+      <label for="rate">Rate</label>
+      <input id="rate" class="range" type="range" min="0.6" max="1.6" step="0.1" value="1">
+    </div>
+    <div>
+      <label for="pitch">Pitch</label>
+      <input id="pitch" class="range" type="range" min="0.4" max="2" step="0.1" value="1">
+    </div>
   </div>
 
-  <div id="preview" style="margin-top:12px"></div>
+  <div class="footer">Works best in Chrome/Edge on Android. Uses browser SpeechRecognition + SpeechSynthesis. No external AI required.</div>
+</div>
 
-  <div id="result" class="result" style="display:none">
-    <div id="groupBadge" class="badge">A+</div>
-    <div id="confidence" style="margin-top:8px;font-weight:600" class="muted">Revealed by saved data</div>
-    <div style="margin-top:8px" class="small muted">Tip: You can save multiple groups and pick which one is the default to reveal.</div>
-  </div>
+  </div>  <script>
+    // Feature detection
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const synth = window.speechSynthesis;
 
-  <div style="margin-top:12px" class="muted small">
-    <strong>Reminder:</strong> This app <em>does not</em> detect blood groups. It simply displays the blood group(s) you saved locally. For real blood group testing, contact a certified lab.
-  </div>
-</section>
+    const micBtn = document.getElementById('mic');
+    const transcriptEl = document.getElementById('transcript');
+    const statusChip = document.getElementById('status');
+    const responseText = document.getElementById('responseText');
+    const stopBtn = document.getElementById('stopBtn');
 
-<footer>
-  Built for demo • Data stored locally in your browser
-</footer>
+    const voiceSelect = document.getElementById('voiceSelect');
+    const rateInput = document.getElementById('rate');
+    const pitchInput = document.getElementById('pitch');
 
-  </div><script>
-// Elements
-const openCam = document.getElementById('openCam')
-const stopCam = document.getElementById('stopCam')
-const scanBtn = document.getElementById('scanBtn')
-const snapBtn = document.getElementById('snapBtn')
-const video = document.getElementById('video')
-const canvas = document.getElementById('canvas')
-const preview = document.getElementById('preview')
-const statusEl = document.getElementById('status')
-const groupSelect = document.getElementById('groupSelect')
-const addGroupBtn = document.getElementById('addGroup')
-const defaultSelect = document.getElementById('defaultSelect')
-const clearGroups = document.getElementById('clearGroups')
-const customGroup = document.getElementById('customGroup')
-const result = document.getElementById('result')
-const groupBadge = document.getElementById('groupBadge')
-const confidenceEl = document.getElementById('confidence')
-const autoScan = document.getElementById('autoScan')
+    let recognition, listening=false;
 
-let stream = null
-const STORAGE_KEY = 'face_scanner_groups_v1'
+    if(!SpeechRecognition){
+      transcriptEl.innerText = 'SpeechRecognition not supported in this browser. Use Chrome on Android.';
+      micBtn.disabled = true;
+      statusChip.innerText = 'Unsupported';
+    } else {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-IN';
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
 
-const DEFAULT_OPTIONS = ['A+','A-','B+','B-','AB+','AB-','O+','O-']
+      let finalTranscript = '';
 
-function setStatus(s){ statusEl.textContent = s }
+      recognition.onstart = () => { listening=true; micBtn.classList.add('listening'); statusChip.innerText='Listening...'; }
+      recognition.onend = () => { listening=false; micBtn.classList.remove('listening'); statusChip.innerText='Idle'; }
 
-// load saved groups from localStorage
-function loadGroups(){
-  const raw = localStorage.getItem(STORAGE_KEY)
-  let data = {groups: DEFAULT_OPTIONS.slice(0,4), default: DEFAULT_OPTIONS[0], autoscan:false}
-  try{ if(raw) data = JSON.parse(raw) }catch(e){ /* ignore */ }
-  return data
-}
+      recognition.onresult = (e) => {
+        let interim = '';
+        for(let i=e.resultIndex;i<e.results.length;i++){
+          const res = e.results[i];
+          if(res.isFinal){ finalTranscript += res[0].transcript; }
+          else { interim += res[0].transcript; }
+        }
+        transcriptEl.innerText = (finalTranscript + ' ' + interim).trim();
 
-function saveGroups(data){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)) }
+        // If final comes in, process
+        if(e.results[e.results.length-1].isFinal){
+          const userText = finalTranscript.trim();
+          finalTranscript='';
+          processUserText(userText);
+        }
+      }
 
-function refreshGroupUI(){
-  const data = loadGroups()
-  // groups select (multiple)
-  groupSelect.innerHTML = ''
-  data.groups.forEach(g=>{
-    const o = document.createElement('option')
-    o.value = g; o.textContent = g
-    groupSelect.appendChild(o)
-  })
-  // default select
-  defaultSelect.innerHTML = ''
-  const noneOpt = document.createElement('option'); noneOpt.value=''; noneOpt.textContent='(none)'
-  defaultSelect.appendChild(noneOpt)
-  data.groups.forEach(g=>{
-    const o = document.createElement('option'); o.value=g; o.textContent=g
-    if(g===data.default) o.selected=true
-    defaultSelect.appendChild(o)
-  })
-  // autoscan
-  autoScan.checked = !!data.autoscan
-  scanBtn.disabled = !data.groups.length
-}
+      recognition.onerror = (ev) => {
+        console.error('Speech error', ev.error);
+        statusChip.innerText = 'Error: ' + ev.error;
+        setTimeout(()=> statusChip.innerText='Idle', 2500);
+      }
 
-// Initialize UI on page load
-refreshGroupUI()
-
-addGroupBtn.addEventListener('click', ()=>{
-  const v = (customGroup.value||'').trim()
-  if(!v){ alert('Enter a blood group like A+ or O-'); return }
-  const data = loadGroups()
-  if(!data.groups.includes(v)) data.groups.push(v)
-  data.default = data.default || v
-  saveGroups(data)
-  customGroup.value=''
-  refreshGroupUI()
-})
-
-clearGroups.addEventListener('click', ()=>{
-  if(!confirm('Clear all saved groups?')) return
-  const data = {groups:[], default:'', autoscan:false}
-  saveGroups(data)
-  refreshGroupUI()
-})
-
-defaultSelect.addEventListener('change', ()=>{
-  const data = loadGroups(); data.default = defaultSelect.value; saveGroups(data); refreshGroupUI()
-})
-
-autoScan.addEventListener('change', ()=>{ const data = loadGroups(); data.autoscan = autoScan.checked; saveGroups(data) })
-
-// Camera functions
-async function openCamera(){
-  try{
-    setStatus('Requesting camera permission...')
-    stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:960}},audio:false})
-    video.srcObject = stream
-    setStatus('Camera active')
-    scanBtn.disabled = false
-    // if autoscan enabled, start scan
-    const data = loadGroups()
-    if(data.autoscan) startScan()
-  }catch(e){
-    console.error(e)
-    setStatus('Camera unavailable or permission denied')
-    alert('Cannot open camera. Please allow camera permission or use Capture Photo.')
-  }
-}
-
-function stopCamera(){
-  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null }
-  video.srcObject = null
-  setStatus('Camera stopped')
-}
-
-function capturePhoto(){
-  const w = video.videoWidth || 640
-  const h = video.videoHeight || 480
-  canvas.width = w; canvas.height = h
-  const ctx = canvas.getContext('2d')
-  ctx.drawImage(video,0,0,w,h)
-  const dataUrl = canvas.toDataURL('image/png')
-  showPreview(dataUrl)
-}
-
-function showPreview(dataUrl){
-  preview.innerHTML = ''
-  const img = document.createElement('img')
-  img.src = dataUrl
-  img.style.width = '100%'
-  img.style.borderRadius = '10px'
-  preview.appendChild(img)
-  preview.setAttribute('data-img', dataUrl)
-  result.style.display = 'none'
-}
-
-// Scan animation and reveal saved result
-function startScan(){
-  if(!video.srcObject){ alert('Open the camera first'); return }
-  setStatus('Scanning...')
-  scanBtn.disabled = true
-  // small animation: flash and countdown
-  const frame = document.getElementById('scanFrame')
-  frame.style.borderStyle='solid'
-  let count = 3
-  const iv = setInterval(()=>{
-    frame.style.opacity = (count%2)?'1':'0.45'
-    setStatus('Scanning — ' + count)
-    count--
-    if(count<0){ clearInterval(iv); frame.style.opacity='1'; frame.style.borderStyle='dashed'; revealSaved() }
-  },700)
-}
-
-function revealSaved(){
-  const data = loadGroups()
-  const toShow = data.default || (data.groups && data.groups[0]) || ''
-  if(!toShow){ alert('No saved blood group found. Add one first.'); setStatus('Idle'); scanBtn.disabled=false; return }
-  // show result
-  groupBadge.textContent = toShow
-  confidenceEl.textContent = 'Revealed from saved profile'
-  result.style.display = 'block'
-  setStatus('Done')
-  scanBtn.disabled = false
-}
-
-// Event listeners
-openCam.addEventListener('click', openCamera)
-stopCam.addEventListener('click', stopCamera)
-snapBtn.addEventListener('click', ()=>{ if(video.srcObject) capturePhoto(); else alert('Open camera first or use upload (not available in demo).') })
-scanBtn.addEventListener('click', startScan)
-
-// Auto-open camera on page load if permission previously granted
-(async ()=>{
-  try{
-    // check if permission already granted
-    const perm = await navigator.permissions.query({name:'camera'})
-    if(perm.state==='granted'){
-      // open silently
-      openCamera()
     }
-    // if denied, do nothing — user must click
-  }catch(e){ /* permissions api may not be supported */ }
-})();
 
-// Save initial default groups if localStorage empty
-(function ensureDefaults(){
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if(!raw){
-    const data = {groups: DEFAULT_OPTIONS.slice(0,8), default: DEFAULT_OPTIONS[0], autoscan:false}
-    saveGroups(data)
-    refreshGroupUI()
-  }
-})()
+    // mic toggle
+    micBtn.addEventListener('click', ()=>{
+      if(!recognition) return;
+      if(!listening){ try{ recognition.start(); statusChip.innerText='Listening...'; transcriptEl.innerText=''; }catch(e){console.warn(e)} }
+      else { recognition.stop(); statusChip.innerText='Stopping...'; }
+    });
 
-// Clean up when leaving
-window.addEventListener('pagehide', stopCamera)
-window.addEventListener('beforeunload', stopCamera)
-</script></body>
+    stopBtn.addEventListener('click', ()=>{ if(recognition && listening) recognition.stop(); transcriptEl.innerText=''; });
+
+    // basic local NLP / response logic
+    function processUserText(text){
+      console.log('user said:', text);
+      showThinking();
+      // simple intents
+      const t = text.toLowerCase();
+      let reply = "I didn't catch that. Can you rephrase?";
+
+      if(/hello|hi\b/.test(t)) reply = 'Hey there! How can I help?';
+      else if(/time|what time/.test(t)) reply = `It's ${new Date().toLocaleTimeString()}.`;
+      else if(/date|day/.test(t)) reply = `Today is ${new Date().toLocaleDateString()}.`;
+      else if(/joke/.test(t)) reply = 'Why did the computer get cold? Because it left its Windows open!';
+      else if(/your name/.test(t)) reply = 'I am your local Gemini-style assistant.';
+      else if(/open (youtube|google|gmail)/.test(t)){
+        const site = t.match(/open (youtube|google|gmail)/)[1];
+        reply = `Opening ${site}...`;
+        // open the site after speaking
+        speakAndMaybeOpen(reply, site);
+        return;
+      } else if(/search for (.+)/.test(t)){
+        const q = t.match(/search for (.+)/)[1];
+        reply = `Searching the web for: ${q}. I will open a results page.`;
+        speak(reply, ()=>{ window.open('https://www.google.com/search?q=' + encodeURIComponent(q), '_blank'); });
+        return;
+      } else if(/thank/.test(t)) reply = 'You are welcome!';
+      else {
+        // fallback: echo short summary
+        reply = 'You said: ' + text;
+      }
+
+      speak(reply);
+    }
+
+    function showThinking(){
+      responseText.innerHTML = '<div style="display:flex;align-items:center;gap:8px"><div style="font-weight:600">Thinking</div><div class="dots"><span></span><span></span><span></span></div></div>';
+    }
+
+    function speakAndMaybeOpen(reply, site){
+      speak(reply, ()=>{
+        const urls = {youtube:'https://m.youtube.com', google:'https://www.google.com', gmail:'https://mail.google.com'};
+        const url = urls[site] || 'https://www.'+site+'.com';
+        window.open(url,'_blank');
+      });
+    }
+
+    function speak(text, onend){
+      // small delay to simulate thinking
+      setTimeout(()=>{
+        responseText.textContent = text;
+
+        if(!('speechSynthesis' in window)){
+          statusChip.innerText='TTS unsupported';
+          if(onend) onend();
+          return;
+        }
+        const utter = new SpeechSynthesisUtterance(text);
+        const selectedIndex = voiceSelect.selectedIndex >=0 ? voiceSelect.selectedIndex : 0;
+        const voices = synth.getVoices();
+        if(voices[selectedIndex]) utter.voice = voices[selectedIndex];
+        utter.rate = parseFloat(rateInput.value);
+        utter.pitch = parseFloat(pitchInput.value);
+        utter.onstart = ()=> statusChip.innerText='Speaking...';
+        utter.onend = ()=>{ statusChip.innerText='Idle'; if(onend) onend(); }
+        synth.cancel();
+        synth.speak(utter);
+      }, 700);
+    }
+
+    // populate voices
+    function populateVoices(){
+      const voices = synth.getVoices();
+      voiceSelect.innerHTML='';
+      voices.forEach((v,i)=>{
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = `${v.name} — ${v.lang}` + (v.default? ' (default)':'');
+        voiceSelect.appendChild(opt);
+      });
+    }
+    populateVoices();
+    if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = populateVoices; }
+
+    // initial greeting
+    setTimeout(()=> speak('Hello — tap the mic and speak. I am ready.'), 900);
+
+  </script></body>
 </html>
