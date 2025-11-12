@@ -1,210 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Gemini Voice — Mobile</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecretShare — Reveal Secrets</title>
 <style>
-  :root{
-    --bg1:#031124;
-    --bg2:#05162b;
-    --accent1:#4dd0e1;
-    --accent2:#7c4dff;
-    --glass: rgba(255,255,255,0.06);
-    --bubble-user: linear-gradient(90deg,#3b82f6,#2563eb);
-    --bubble-assistant: linear-gradient(180deg,#0b1220,#071024);
-    color-scheme: dark;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;font-family:Inter,system-ui,"Segoe UI",Roboto,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));display:flex;align-items:flex-start;justify-content:center;padding:18px}
-  .shell{width:100%;max-width:760px;border-radius:18px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 40px rgba(2,6,23,0.6);backdrop-filter: blur(6px);}
-  .top{display:flex;align-items:center;gap:12px;padding:14px}
-  .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#021; font-weight:700}
-  .title{color: #e6f7ff;font-weight:700;font-size:16px}
-  .subtitle{font-size:12px;color:#9fb3c7}
-  .chat{padding:14px;max-height:62vh;overflow:auto}
-  .bubble{max-width:84%;padding:12px 14px;border-radius:14px;margin:8px 0;word-break:break-word;box-shadow:0 6px 16px rgba(2,6,23,0.6)}
-  .bubble.user{margin-left:auto;border-bottom-right-radius:6px;background:var(--bubble-user);color:white}
-  .bubble.assistant{margin-right:auto;background:linear-gradient(180deg,#07172a,#05223d);color:#d6f7ff;border-bottom-left-radius:6px}
-  .meta{font-size:12px;color:#9fb3c7;margin-top:6px}
-  .controls{display:flex;gap:8px;align-items:center;padding:10px;border-top:1px solid rgba(255,255,255,0.03)}
-  .mic{width:66px;height:66px;border-radius:50%;border:none;background:linear-gradient(180deg,#081826,#063042);display:grid;place-items:center;color:white;font-size:26px;box-shadow:0 8px 26px rgba(7,18,28,0.6);cursor:pointer}
-  .mic.listening{box-shadow:0 12px 36px rgba(124,77,255,0.22);transform:scale(1.04)}
-  .inputWrap{flex:1;display:flex;gap:8px;align-items:center}
-  .textInput{flex:1;padding:12px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#dff;outline:none}
-  .sendBtn{padding:10px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#021;border:none;cursor:pointer}
-  .typingDots span{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:#8bdcff;animation:dot 1s infinite}
-  .typingDots span:nth-child(2){animation-delay:.12s} .typingDots span:nth-child(3){animation-delay:.24s}
-  @keyframes dot{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-  @media (max-width:420px){.mic{width:58px;height:58px;font-size:22px}}
+body {
+  font-family: system-ui, sans-serif;
+  background: #f6f8fa;
+  color: #111;
+  margin: 0;
+  padding: 20px;
+}
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 20px;
+}
+h1 { text-align: center; color: #1d4ed8; }
+textarea {
+  width: 100%; min-height: 120px; resize: vertical;
+  padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+}
+button {
+  margin: 5px; padding: 10px 16px;
+  border: none; border-radius: 8px;
+  cursor: pointer; font-weight: 600;
+}
+.primary { background: #2563eb; color: #fff; }
+.danger { background: #dc2626; color: #fff; }
+#list { margin-top: 10px; }
+.secret-item {
+  background: #f1f5f9; padding: 10px; border-radius: 8px;
+  margin-bottom: 6px;
+}
+.linkbox {
+  background: #f0fdf4;
+  padding: 10px; border-radius: 8px;
+  margin-top: 10px; word-wrap: break-word;
+  border: 1px dashed #16a34a;
+}
+footer { margin-top: 20px; font-size: 13px; color: #555; text-align: center; }
 </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="top">
-      <div class="logo">G</div>
-      <div>
-        <div class="title">Gemini Voice</div>
-        <div class="subtitle">Speak — chat — hear. Powered by OpenAI (server side).</div>
-      </div>
-    </div>
 
-    <div id="chat" class="chat">
-      <div class="bubble assistant">
-        <div style="font-weight:700">Assistant</div>
-        <div style="margin-top:6px;color:#cfefff">Hi — tap the mic and speak. I will reply with voice and text.</div>
-      </div>
-    </div>
+<div class="container">
+  <h1>🔐 SecretShare</h1>
+  <p style="text-align:center;color:#555;">Write an anonymous secret and share it. Anyone with the link can see it.</p>
 
-    <div class="controls">
-      <button id="mic" class="mic" title="Speak">🎤</button>
-      <div class="inputWrap">
-        <input id="text" class="textInput" placeholder="Type a message..." />
-        <button id="send" class="sendBtn">Send</button>
-      </div>
-    </div>
+  <textarea id="secretInput" placeholder="Type your secret here..."></textarea>
+  <div>
+    <button id="saveBtn">💾 Save locally</button>
+    <button id="shareBtn" class="primary">🌐 Save & Generate Link</button>
+    <button id="randomBtn">🎲 Show Random Secret</button>
+    <button id="clearBtn" class="danger">🧹 Clear All</button>
   </div>
 
+  <div id="linkBox" class="linkbox" style="display:none;">
+    <div><b>Shareable Link:</b></div>
+    <div id="shareUrl"></div>
+  </div>
+
+  <div id="revealed" class="secret-item" style="display:none;">
+    <div><b>Revealed Secret:</b></div>
+    <div id="revealedText" style="white-space:pre-wrap;"></div>
+  </div>
+
+  <h3 style="margin-top:20px;">📜 Your saved secrets:</h3>
+  <div id="list"></div>
+
+  <div id="msg" style="color:green;margin-top:10px;"></div>
+
+  <footer>All secrets are saved only in your browser. No server used.</footer>
+</div>
+
 <script>
-  // front-end logic: speech -> /api/chat -> display -> /api/tts -> play
-  const micBtn = document.getElementById('mic');
-  const chatEl = document.getElementById('chat');
-  const textInput = document.getElementById('text');
-  const sendBtn = document.getElementById('send');
+const secretInput = document.getElementById("secretInput");
+const saveBtn = document.getElementById("saveBtn");
+const shareBtn = document.getElementById("shareBtn");
+const randomBtn = document.getElementById("randomBtn");
+const clearBtn = document.getElementById("clearBtn");
+const linkBox = document.getElementById("linkBox");
+const shareUrl = document.getElementById("shareUrl");
+const revealed = document.getElementById("revealed");
+const revealedText = document.getElementById("revealedText");
+const list = document.getElementById("list");
+const msg = document.getElementById("msg");
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recognition = null;
-  if(SpeechRecognition){
-    recognition = new SpeechRecognition();
-    recognition.lang = 'en-IN';
-    recognition.interimResults = false;
-  } else {
-    micBtn.disabled = true;
-    micBtn.title = "SpeechRecognition unsupported (use Chrome on Android)";
-  }
+function getSecrets() {
+  return JSON.parse(localStorage.getItem("secrets") || "[]");
+}
 
-  let listening = false;
-  let conversation = [
-    { role: "system", content: "You are a helpful assistant with a friendly Gemini-like persona." }
-  ];
+function saveSecrets(secrets) {
+  localStorage.setItem("secrets", JSON.stringify(secrets));
+  showSecrets();
+}
 
-  function addBubble(role, text, isTyping=false){
-    const div = document.createElement('div');
-    div.className = 'bubble ' + (role==='user' ? 'user' : 'assistant');
-    const inner = document.createElement('div');
-    inner.innerHTML = `<div style="font-weight:600">${role==='user' ? 'You' : 'Assistant'}</div>`;
-    const content = document.createElement('div');
-    content.style.marginTop = '8px';
-    if(isTyping){
-      content.innerHTML = '<div class="typingDots"><span></span><span></span><span></span></div>';
-    } else {
-      content.textContent = text;
-    }
-    inner.appendChild(content);
-    div.appendChild(inner);
-    chatEl.appendChild(div);
-    chatEl.scrollTop = chatEl.scrollHeight;
-    return div;
-  }
-
-  function playBase64Audio(b64, mime){
-    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-    const blob = new Blob([bytes.buffer], { type: mime });
-    const url = URL.createObjectURL(blob);
-    const a = new Audio(url);
-    a.onended = ()=> URL.revokeObjectURL(url);
-    a.play().catch(e=> console.warn("Playback failed", e));
-  }
-
-  async function sendMessage(text){
-    // show user bubble
-    addBubble('user', text);
-    conversation.push({ role: 'user', content: text });
-
-    // show assistant typing
-    const typingBubble = addBubble('assistant', '', true);
-
-    try{
-      // send to server
-      const r = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: conversation })
-      });
-      const j = await r.json();
-      const reply = j.reply || "Sorry, I couldn't generate a reply.";
-
-      // replace typing with real text
-      typingBubble.querySelector('div > div:nth-child(2)').textContent = reply;
-      conversation.push({ role: 'assistant', content: reply });
-
-      // ask TTS
-      const tts = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: reply, voice: "alloy" })
-      });
-      const tj = await tts.json();
-      if(tts.ok && tj.audioBase64){
-        playBase64Audio(tj.audioBase64, tj.mime || 'audio/mpeg');
-      } else {
-        console.warn("TTS failed", tj);
-      }
-    } catch(err){
-      console.error(err);
-      typingBubble.querySelector('div > div:nth-child(2)').textContent = "Error: couldn't reach server.";
-    }
-  }
-
-  // send from text input
-  sendBtn.addEventListener('click', ()=> {
-    const val = textInput.value.trim();
-    if(!val) return;
-    textInput.value = '';
-    sendMessage(val);
+function showSecrets() {
+  const secrets = getSecrets();
+  list.innerHTML = "";
+  if (secrets.length === 0) list.innerHTML = "<i>No secrets saved yet.</i>";
+  else secrets.forEach((s, i) => {
+    const div = document.createElement("div");
+    div.className = "secret-item";
+    div.textContent = s;
+    list.appendChild(div);
   });
+}
 
-  textInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ sendBtn.click(); } });
+// Save locally
+saveBtn.onclick = () => {
+  const txt = secretInput.value.trim();
+  if (!txt) { msg.textContent = "Type a secret first!"; return; }
+  const secrets = getSecrets();
+  secrets.push(txt);
+  saveSecrets(secrets);
+  secretInput.value = "";
+  msg.textContent = "✅ Secret saved locally!";
+  linkBox.style.display = "none";
+};
 
-  // mic logic
-  micBtn.addEventListener('click', ()=>{
-    if(!recognition) return alert('SpeechRecognition unsupported. Use Chrome/Edge on Android.');
-    if(!listening){
-      recognition.start();
-      listening = true;
-      micBtn.classList.add('listening');
-      micBtn.textContent = '●';
-    } else {
-      recognition.stop();
-      listening = false;
-      micBtn.classList.remove('listening');
-      micBtn.textContent = '🎤';
-    }
-  });
+// Generate shareable link
+shareBtn.onclick = () => {
+  const txt = secretInput.value.trim();
+  if (!txt) { msg.textContent = "Type a secret first!"; return; }
+  const encoded = btoa(encodeURIComponent(txt));
+  const url = window.location.origin + window.location.pathname + "#secret=" + encoded;
+  shareUrl.textContent = url;
+  linkBox.style.display = "block";
+  msg.textContent = "🔗 Share this link with others.";
+};
 
-  if(recognition){
-    recognition.onresult = (e)=>{
-      const transcript = Array.from(e.results).map(r=>r[0].transcript).join('');
-      // auto-send final transcript
-      sendMessage(transcript);
-      if(listening){ recognition.stop(); listening=false; micBtn.classList.remove('listening'); micBtn.textContent='🎤'; }
-    };
-    recognition.onerror = (ev)=> {
-      console.error("recognition error", ev);
-      listening=false; micBtn.classList.remove('listening'); micBtn.textContent='🎤';
-      alert("Speech recognition error: " + (ev.error || 'unknown'));
-    };
-    recognition.onend = ()=> { listening=false; micBtn.classList.remove('listening'); micBtn.textContent='🎤'; };
+// Show random secret
+randomBtn.onclick = () => {
+  const secrets = getSecrets();
+  if (secrets.length === 0) { msg.textContent = "No saved secrets."; return; }
+  const random = secrets[Math.floor(Math.random() * secrets.length)];
+  revealedText.textContent = random;
+  revealed.style.display = "block";
+  msg.textContent = "🎉 Random secret shown!";
+};
+
+// Clear all
+clearBtn.onclick = () => {
+  localStorage.removeItem("secrets");
+  showSecrets();
+  revealed.style.display = "none";
+  linkBox.style.display = "none";
+  msg.textContent = "🧹 All secrets cleared.";
+};
+
+// If visiting with #secret= link
+if (location.hash.startsWith("#secret=")) {
+  const encoded = location.hash.slice(8);
+  try {
+    const decoded = decodeURIComponent(atob(encoded));
+    revealedText.textContent = decoded;
+    revealed.style.display = "block";
+    msg.textContent = "💬 Secret revealed from shared link!";
+  } catch (e) {
+    msg.textContent = "❌ Invalid secret link.";
   }
+}
 
-  // small welcome ping
-  window.addEventListener('load', ()=> {
-    setTimeout(()=> {
-      // don't auto speak — wait for user
-    }, 400);
-  });
-
+showSecrets();
 </script>
+
 </body>
 </html>
