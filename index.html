@@ -3,171 +3,111 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SecretShare — Reveal Secrets</title>
+<title>SecretShare — Public Link</title>
 <style>
 body {
   font-family: system-ui, sans-serif;
   background: #f6f8fa;
-  color: #111;
   margin: 0;
   padding: 20px;
+  color: #111;
 }
 .container {
-  max-width: 700px;
+  max-width: 720px;
   margin: auto;
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   padding: 20px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 h1 { text-align: center; color: #1d4ed8; }
 textarea {
-  width: 100%; min-height: 120px; resize: vertical;
-  padding: 10px; border: 1px solid #ccc; border-radius: 8px;
+  width: 100%; min-height: 120px;
+  padding: 10px; border-radius: 8px;
+  border: 1px solid #ccc; resize: vertical;
 }
 button {
   margin: 5px; padding: 10px 16px;
-  border: none; border-radius: 8px;
-  cursor: pointer; font-weight: 600;
+  border-radius: 8px; border: none;
+  font-weight: 600; cursor: pointer;
 }
-.primary { background: #2563eb; color: #fff; }
-.danger { background: #dc2626; color: #fff; }
-#list { margin-top: 10px; }
-.secret-item {
-  background: #f1f5f9; padding: 10px; border-radius: 8px;
-  margin-bottom: 6px;
-}
+.primary { background: #2563eb; color: white; }
+.danger { background: #dc2626; color: white; }
+footer { text-align: center; color: #555; margin-top: 20px; font-size: 13px; }
 .linkbox {
-  background: #f0fdf4;
-  padding: 10px; border-radius: 8px;
-  margin-top: 10px; word-wrap: break-word;
-  border: 1px dashed #16a34a;
+  background: #f0fdf4; border: 1px dashed #16a34a;
+  border-radius: 8px; padding: 10px; margin-top: 12px;
+  word-wrap: break-word;
 }
-footer { margin-top: 20px; font-size: 13px; color: #555; text-align: center; }
+.secretbox {
+  background: #fff7ed; border: 1px solid #fde68a;
+  border-radius: 8px; padding: 10px; margin-top: 15px;
+}
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>🔐 SecretShare</h1>
-  <p style="text-align:center;color:#555;">Write an anonymous secret and share it. Anyone with the link can see it.</p>
+  <h1>🔐 SecretShare — Public Link</h1>
+  <p style="text-align:center;color:#555;">Type a secret and share it. Anyone with the link can view it on any device.</p>
 
   <textarea id="secretInput" placeholder="Type your secret here..."></textarea>
   <div>
-    <button id="saveBtn">💾 Save locally</button>
-    <button id="shareBtn" class="primary">🌐 Save & Generate Link</button>
-    <button id="randomBtn">🎲 Show Random Secret</button>
-    <button id="clearBtn" class="danger">🧹 Clear All</button>
+    <button id="createBtn" class="primary">🌐 Create Share Link</button>
+    <button id="clearBtn" class="danger">🧹 Clear</button>
   </div>
 
   <div id="linkBox" class="linkbox" style="display:none;">
-    <div><b>Shareable Link:</b></div>
-    <div id="shareUrl"></div>
+    <b>Share this link:</b>
+    <div id="linkOutput"></div>
   </div>
 
-  <div id="revealed" class="secret-item" style="display:none;">
-    <div><b>Revealed Secret:</b></div>
-    <div id="revealedText" style="white-space:pre-wrap;"></div>
+  <div id="secretBox" class="secretbox" style="display:none;">
+    <b>Revealed Secret:</b>
+    <div id="secretText" style="white-space:pre-wrap;margin-top:8px;"></div>
   </div>
 
-  <h3 style="margin-top:20px;">📜 Your saved secrets:</h3>
-  <div id="list"></div>
-
-  <div id="msg" style="color:green;margin-top:10px;"></div>
-
-  <footer>All secrets are saved only in your browser. No server used.</footer>
+  <footer>Secrets are encoded inside the link. No server or database used.</footer>
 </div>
 
 <script>
-const secretInput = document.getElementById("secretInput");
-const saveBtn = document.getElementById("saveBtn");
-const shareBtn = document.getElementById("shareBtn");
-const randomBtn = document.getElementById("randomBtn");
+const input = document.getElementById("secretInput");
+const createBtn = document.getElementById("createBtn");
 const clearBtn = document.getElementById("clearBtn");
 const linkBox = document.getElementById("linkBox");
-const shareUrl = document.getElementById("shareUrl");
-const revealed = document.getElementById("revealed");
-const revealedText = document.getElementById("revealedText");
-const list = document.getElementById("list");
-const msg = document.getElementById("msg");
+const linkOutput = document.getElementById("linkOutput");
+const secretBox = document.getElementById("secretBox");
+const secretText = document.getElementById("secretText");
 
-function getSecrets() {
-  return JSON.parse(localStorage.getItem("secrets") || "[]");
-}
-
-function saveSecrets(secrets) {
-  localStorage.setItem("secrets", JSON.stringify(secrets));
-  showSecrets();
-}
-
-function showSecrets() {
-  const secrets = getSecrets();
-  list.innerHTML = "";
-  if (secrets.length === 0) list.innerHTML = "<i>No secrets saved yet.</i>";
-  else secrets.forEach((s, i) => {
-    const div = document.createElement("div");
-    div.className = "secret-item";
-    div.textContent = s;
-    list.appendChild(div);
-  });
-}
-
-// Save locally
-saveBtn.onclick = () => {
-  const txt = secretInput.value.trim();
-  if (!txt) { msg.textContent = "Type a secret first!"; return; }
-  const secrets = getSecrets();
-  secrets.push(txt);
-  saveSecrets(secrets);
-  secretInput.value = "";
-  msg.textContent = "✅ Secret saved locally!";
-  linkBox.style.display = "none";
-};
-
-// Generate shareable link
-shareBtn.onclick = () => {
-  const txt = secretInput.value.trim();
-  if (!txt) { msg.textContent = "Type a secret first!"; return; }
-  const encoded = btoa(encodeURIComponent(txt));
-  const url = window.location.origin + window.location.pathname + "#secret=" + encoded;
-  shareUrl.textContent = url;
-  linkBox.style.display = "block";
-  msg.textContent = "🔗 Share this link with others.";
-};
-
-// Show random secret
-randomBtn.onclick = () => {
-  const secrets = getSecrets();
-  if (secrets.length === 0) { msg.textContent = "No saved secrets."; return; }
-  const random = secrets[Math.floor(Math.random() * secrets.length)];
-  revealedText.textContent = random;
-  revealed.style.display = "block";
-  msg.textContent = "🎉 Random secret shown!";
-};
-
-// Clear all
-clearBtn.onclick = () => {
-  localStorage.removeItem("secrets");
-  showSecrets();
-  revealed.style.display = "none";
-  linkBox.style.display = "none";
-  msg.textContent = "🧹 All secrets cleared.";
-};
-
-// If visiting with #secret= link
+// If link contains #secret= decode and show
 if (location.hash.startsWith("#secret=")) {
   const encoded = location.hash.slice(8);
   try {
     const decoded = decodeURIComponent(atob(encoded));
-    revealedText.textContent = decoded;
-    revealed.style.display = "block";
-    msg.textContent = "💬 Secret revealed from shared link!";
-  } catch (e) {
-    msg.textContent = "❌ Invalid secret link.";
+    secretText.textContent = decoded;
+    secretBox.style.display = "block";
+  } catch {
+    secretText.textContent = "Invalid or broken link.";
+    secretBox.style.display = "block";
   }
 }
 
-showSecrets();
+// Create shareable link
+createBtn.onclick = () => {
+  const txt = input.value.trim();
+  if (!txt) { alert("Please type a secret first!"); return; }
+  const encoded = btoa(encodeURIComponent(txt));
+  const url = location.origin + location.pathname + "#secret=" + encoded;
+  linkOutput.textContent = url;
+  linkBox.style.display = "block";
+};
+
+// Clear everything
+clearBtn.onclick = () => {
+  input.value = "";
+  linkBox.style.display = "none";
+  secretBox.style.display = "none";
+};
 </script>
 
 </body>
